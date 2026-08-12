@@ -1,0 +1,4 @@
+{
+  "name": "wechat-cover-design",
+  "description": "仅负责公众号封面图设计：输入文章正文，分析内容类型并自动匹配4套视觉主题（学术机制图风/手绘信息图风/顶刊科研封面风/粘土泥塑微缩风），输出可直接喂 DALL-E/Midjourney/Gemini 的英文文生图 prompt，或调用 OpenAI 兼容 Images API 直接出图保存 PNG。适用于 AI/科技、生物医药等多领域公众号。触发词：封面、封面图、设计封面、生成封面、封面提示词、封面prompt、配图、文生图、出图、cover image。注意：只做封面图，不含标题与摘要。"
+}

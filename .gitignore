@@ -1,0 +1,5 @@
+# 配置文件可能包含 api_key，禁止入库
+config.json
+
+# 本地生成的封面图与 prompt 备忘
+assets/covers/
