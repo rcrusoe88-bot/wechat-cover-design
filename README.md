@@ -12,15 +12,16 @@
 
 ## 主题库
 
-- 主题一：学术机制图风——机制解析、概念逻辑链、信息密度高。
-- 主题二：手绘信息图风——从旧到新、痛点到解决方案、技术对比。
-- 主题三：顶刊科研封面风——重大发现、深度解读、单一强视觉隐喻。
+以下 16 套主题按顺序陈列：主题一至主题三的封面模板实例**待补充**，主题四至主题十六已附本 Skill 生成的封面实例。参考图用于约束媒介、构图、色板和视觉层级；正式出图默认生成无字底图，再后期叠加准确标题。点击缩略图可查看完整预览。
 
-以下 13 款为已确认并附参考图的主题模板，均为本 Skill 生成的公众号封面实例。参考图用于约束媒介、构图、色板和视觉层级；正式出图默认生成无字底图，再后期叠加准确标题。点击缩略图可查看完整预览。
-
-### 封面模板实例一览
+### 封面模板实例一览（主题一 – 主题十六）
 
 <table>
+  <tr>
+    <td align="center"><img src="assets/theme-previews/thumbs/theme-placeholder.png" width="300" alt="主题一 学术机制图风（模板待补充）"><br><b>主题一</b> · 学术机制图<br>模板待补充</td>
+    <td align="center"><img src="assets/theme-previews/thumbs/theme-placeholder.png" width="300" alt="主题二 手绘信息图风（模板待补充）"><br><b>主题二</b> · 手绘信息图<br>模板待补充</td>
+    <td align="center"><img src="assets/theme-previews/thumbs/theme-placeholder.png" width="300" alt="主题三 顶刊科研封面风（模板待补充）"><br><b>主题三</b> · 顶刊科研封面<br>模板待补充</td>
+  </tr>
   <tr>
     <td align="center"><a href="assets/theme-previews/theme4-clay-diorama.png"><img src="assets/theme-previews/thumbs/theme4-clay-diorama.jpg" width="300" alt="主题四 生物医学粘土微缩剖面风"></a><br><b>主题四</b> · 粘土微缩剖面</td>
     <td align="center"><a href="assets/theme-previews/theme5-nature-science.png"><img src="assets/theme-previews/thumbs/theme5-nature-science.jpg" width="300" alt="主题五 Nature 科学意象风"></a><br><b>主题五</b> · Nature 科学意象</td>
@@ -48,6 +49,9 @@
 
 **应用场景速查**
 
+- **主题一 · 学术机制图风** —— 机制解析、概念逻辑链、信息密度高。
+- **主题二 · 手绘信息图风** —— 从旧到新、痛点到解决方案、技术对比。
+- **主题三 · 顶刊科研封面风** —— 重大发现、深度解读、单一强视觉隐喻。
 - **主题四 · 生物医学粘土微缩剖面风** —— 细胞递送、受体结合、内吞、内涵体逃逸、RNA 翻译、药物作用机制，以及需要亲和表达的 3–7 步生物学过程。
 - **主题五 · Nature 科学意象风** —— 重大科研突破、前沿机制、单一核心发现、技术平台发布；强调一个宏大科学主体和一个关键交互。
 - **主题六 · Bloomberg Businessweek 商业隐喻风** —— 估值与证据错配、BD 交易、资本泡沫、商业争议和尖锐行业判断；用三秒可懂的视觉比喻表达观点。
