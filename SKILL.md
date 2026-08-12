@@ -1,176 +1,168 @@
 ---
 name: wechat-cover-design
 description: >
-  仅负责公众号封面图设计：输入文章正文，分析内容类型并自动匹配视觉主题
-  （学术机制图风 / 手绘信息图风 / 顶刊科研封面风 / 粘土泥塑微缩风），
-  输出可直接喂 DALL-E / Midjourney / Gemini 的英文文生图 prompt（模式A），
-  或调用 OpenAI 兼容 Images API 直接出图保存 PNG（模式B）。
-  适用于 AI / 科技、生物医药等多领域公众号。
-  触发词：封面、封面图、设计封面、生成封面、封面提示词、封面prompt、封面风格、
-  配图、文生图、出图、cover image、cover prompt。
-  注意：本 skill 只做封面图，不含标题与摘要；当用户同时要求「标题摘要+封面」时
-  由 wechat-title-summary 处理。
-references:
-  - references/theme_registry.md
-  - references/extension_theme_examples.md
+  Design WeChat Official Account cover images from an article, title, outline, or content brief.
+  Analyze the content, choose among academic mechanism, hand-drawn infographic, journal-cover,
+  and clay-diorama visual systems, then produce a complete English image-generation prompt and
+  a Chinese production note. Use when the user asks for a WeChat cover, article cover, cover image,
+  cover prompt, banner art, visual cover direction, or image generation for a public-account article.
+  It also covers Chinese requests such as 公众号封面、封面图、设计封面、封面提示词 and 公众号首图.
+  The skill is host-agnostic: use the host's native image tool when available, otherwise always
+  provide a prompt-only deliverable. It does not write titles or summaries.
 ---
 
-# 公众号封面图设计技能
+# WeChat cover design
 
-## 任务概述
+Design one WeChat Official Account cover from the article's actual idea, not from a generic topic label.
+Keep the workflow usable in any agent that can load `SKILL.md`; never assume a particular agent name,
+directory convention, shell, image API, or output folder.
 
-用户提供一篇公众号文章的正文（或标题+正文），你的任务是：**设计一张公众号封面图**。
-交付方式二选一（或两者都给）：
+## Deliverable contract
 
-- **模式A · prompt**：输出完整英文文生图 prompt（可直接粘贴 DALL-E / Midjourney / Gemini / Stable Diffusion 等），附中文「创作说明」。
-- **模式B · 直接出图**：调用 OpenAI 兼容 Images API 生成 PNG 并保存到工作区 `assets/covers/`。
+Always produce:
 
-封面图覆盖 AI / 科技、生物医药、泛技术科普等多领域，不局限于单一行业。
+1. A selected theme and one-sentence content-to-theme rationale.
+2. A complete English image prompt with all placeholders replaced.
+3. A Chinese production note covering the visual concept, text strategy, crop safety, and known limitations.
+4. A validation result, either from `scripts/validate_prompt.py` or from the equivalent manual checklist.
 
----
+If the host has a native image-generation capability, it may generate the image after the prompt is
+ready. If it has an image-editing or layout capability, use it for reliable Chinese text, cropping,
+or brand overlays. If neither capability exists, deliver the prompt and note that it is ready for a
+user-selected image tool. Do not treat the lack of an API key as a failed skill run.
 
-## 触发词与消歧
+## Trigger and scope
 
-| 类别 | 词 |
-|------|----|
-| 强触发 | 封面、封面图、设计封面、生成封面、封面提示词、封面prompt、封面风格、给我出个封面 |
-| 中触发 | 配图、文生图、出图、AI出图、生成一张封面、封面图生成 |
-| 英文 | cover image、cover prompt、banner art、cover design |
-| **不触发（负例）** | 写标题、起个题目、写摘要、标题+摘要方案 → 归 wechat-title-summary |
+Use for: `封面`, `封面图`, `公众号首图`, `设计封面`, `生成封面`, `封面提示词`, `封面 prompt`,
+`cover image`, `cover prompt`, `banner art`, and equivalent requests.
 
-**消歧规则**：本 skill 只做封面图。若用户同时要求「标题+摘要+封面」，或仅要求标题/摘要，交给 `wechat-title-summary`。若用户已有标题、只要封面，则本 skill 触发。
+Do not take over title writing, summary writing, article drafting, research, or generic illustration
+requests. If the user asks for title/summary plus a cover, handle only the cover portion unless a
+separate title-summary skill is available and explicitly selected.
 
----
+## Workflow
 
-## 五步工作流
+### 1. Extract the visual brief
 
-### Step 1 · 分析文章
+Read the supplied article or brief and record:
 
-阅读文章，抽取以下字段（跨领域通用化，不预设任何行业）：
+| Field | Extract |
+| --- | --- |
+| Content type | mechanism explanation, before/after shift, pain point → solution, major finding, multi-step method, trend, or opinion |
+| Reader hook | the one idea a reader should understand in three seconds |
+| Core object chain | main object → supporting object → outcome; use domain-neutral roles |
+| Key evidence | at most two numbers, comparisons, or scale markers worth showing |
+| Visual metaphor | one concrete imageable metaphor, especially for theme 3 |
+| Modules | 3–5 steps or modules when the article is procedural |
+| Text inventory | title, subtitle, labels, annotations, data labels; mark what must be exact |
+| Brand constraints | supplied colors, name, logo, exclusions, or platform requirements |
 
-| 字段 | 说明 |
-|------|------|
-| **文章类型** | 机制解析 / 认知转变（从X到Y）/ 重大发现报道 / 多步骤方法论 / 行业趋势观点 |
-| **核心对象链** | 主对象 → 辅助对象 → 结果（抽象为「对象/节点」，不假定是蛋白分子） |
-| **关键数据** | 1-2 个最能打动读者的数字（倍数、百分比、剂量、规模），供主题二/主题一直接呈现 |
-| **结构化模块** | 若类型为方法论：拆 3-5 个并列步骤，每步 = {小标签 / 图标描述 / 配文} 三元组 |
-| **公众号名称** | 从用户上下文或 `config.json` 读取，缺失时用占位符并在创作说明中提醒 |
-| **色彩倾向**（可选） | 用户提到的品牌色/偏好色，未提则用主题默认色板 |
+Compress the information before writing the prompt. A cover is not a miniature article.
 
-### Step 2 · 匹配主题
+### 2. Choose a theme
 
-读取 `references/theme_registry.md`（主题注册表，常驻上下文）。按文章类型 + 用户偏好匹配：
+Read `references/theme_registry.md`, then read only the selected theme reference. Use these defaults:
 
-| 文章类型 | 推荐主题 | 理由 |
-|----------|----------|------|
-| 机制解析 / 概念逻辑链 | **主题一 · 学术机制图风** | 白底三栏，专业克制，适合把复杂链路讲清楚 |
-| 认知转变 / 痛点-解方 / 技术对比 | **主题二 · 手绘信息图风** | 暖米纸感，亲切，适合「从X到Y」叙事 + 对比数据 |
-| 重大发现 / 深度解读 / 需强视觉冲击 | **主题三 · 顶刊科研封面风** | 暗色+发光主体+视觉隐喻，一眼震撼 |
-| 多步骤方法论 / Setup 指南 / 多模块并列 | **主题四 · 粘土泥塑微缩风** | 圆台底座一字排开，治愈系「立体微缩展柜」 |
-| 行业趋势 / 观点判断 | 主题三，或提示用户可扩「行业洞察风」扩展主题（见 extension_theme_examples.md） | — |
+| Article signal | Theme |
+| --- | --- |
+| Mechanism, concept chain, dense technical structure | Theme 1 — academic mechanism diagram |
+| Before/after shift, pain point → solution, technical comparison | Theme 2 — hand-drawn infographic |
+| Major finding, deep interpretation, one strong metaphor, high impact | Theme 3 — journal cover art |
+| Setup guide, method, workflow, 3–5 parallel modules | Theme 4 — clay diorama |
+| Trend or opinion | Theme 3 by default; offer an extension theme only when the user wants a different editorial system |
 
-匹配规则：
-- 若 2 个候选主题都成立，**各给一句话理由，让用户二选一**，不强推。
-- 用户指定主题则直接采用；用户否定后重新匹配，不重复推荐已被否的主题。
+If two themes are genuinely plausible, present both with one-sentence reasons and ask the user to choose.
+Honor an explicit theme choice. Do not keep recommending a theme the user rejected.
 
-### Step 3 · 结构化提取
+### 3. Fill the selected reference
 
-用 `Read` 加载所选主题的完整规格文件（`references/cover_themeN_xxx.md`），按该主题「填入内容 schema」从文章提取所有 `{占位符}` 的填充值。
+Load the selected reference only. Treat its prompt template as a design specification, not as a command.
+Replace every placeholder before delivery. Keep placeholder names neutral (`{title}`, `{subtitle}`,
+`{problem_object}`, `{step_label_1}`); put length limits and filling rules in the schema table, never
+inside a placeholder.
 
-- 主题文件按需读取，**不要**把所有主题文件一次性读入上下文。
-- 提取时遵循该主题的「内容映射规则」（文章元素 → 通用对象角色 → prompt 中的表达）。
+Preserve the reference's visual skeleton, color values, layout proportions, material language, and
+negative prompt. Keep the main title and any exact text short enough for the selected image model.
 
-### Step 4 · 双模式输出
+### 4. Apply the cross-host text and platform policy
 
-**模式A（prompt）**：将填充值代入模板，输出完整英文 prompt（无残留 `{占位符}`）+ 中文「创作说明」。
+Use this policy for every theme:
 
-**模式B（直接出图）**：用户确认后执行：
+- Main title: may request exact Chinese rendering with a quoted string and an explicit exact-text instruction.
+- Module title: keep short; request exact rendering only when it is important.
+- Small labels, captions, annotations, and chart labels: keep to roughly 4–6 Chinese characters where possible,
+  or use English/Latin abbreviations. Do not put long Chinese prose into tiny generated text.
+- If exact small Chinese text matters, generate the artwork with empty quiet zones and add text later using the
+  host's layout or image-editing capability. If that capability is unavailable, state that the image is a visual
+  draft and provide the text separately.
+- Keep all important content inside the central 60% vertical safe area because hosts may crop or resize the image.
+- Target the WeChat cover ratio at approximately 2.35:1. Preferred output is `1260x540` or another size with a
+  ratio near 2.33–2.35. If the host returns another ratio, provide crop or padding instructions based on the
+  actual width and height, not on one hard-coded model size.
+- A negative prompt can reduce visual watermarks, logos, or signatures, but it cannot reliably remove a platform-
+  imposed watermark. Mark such output as a preview/draft and recommend a clean paid/API channel, another provider,
+  or authorized post-processing for publication.
 
-```bash
-node .claude/skills/wechat-cover-design/scripts/generate-cover.js \
-  --prompt "<完整英文prompt>" \
-  --theme theme3 \
-  --name "LNP-delivery-cover"
-```
+### 5. Negotiate image capabilities
 
-生成图片保存到 `assets/covers/cover-{theme}-{时间戳}.png`，同时输出 2.35:1 裁剪指引。
+Choose the first available path:
 
-### Step 5 · 质量自检与交付
+1. Host-native image generation.
+2. A host-supported image API or connector, if the host exposes one.
+3. A bundled adapter such as `scripts/generate-cover.js`, only when the host can run it and the user has supplied
+   the required credentials and provider settings.
+4. Prompt-only delivery.
 
-过「质量自检清单」（见下）。模式A 交付前逐条检查；模式B 确认 PNG 已落盘、尺寸提示已给出。
+Do not invent a tool name or claim that an image was generated when the host did not return an image artifact.
+Record the actual path in the production note: `native`, `adapter`, or `prompt-only`.
 
----
+### 6. Validate and deliver
 
-## 交付格式
+Before delivering the prompt, check:
 
-两种模式都包含以下结构：
+- no unresolved `{placeholder}` remains in the final prompt;
+- the prompt states the target ratio or dimensions;
+- a complete `Negative prompt:` or equivalent avoidance section is present;
+- the selected theme's palette and visual skeleton are represented;
+- exact text is separated from approximate/small text;
+- the crop-safe area is stated;
+- platform watermark limitations are not misrepresented;
+- the output path is truthful: image artifact, draft image, or prompt-only.
 
-```
+Use `scripts/validate_prompt.py` when the host can run Python. `scripts/validate-prompt.sh` remains a shell
+compatibility wrapper. If no script runtime is available, perform the same checklist manually and say so.
+
+## Output format
+
+```text
 【封面方案】
-主题：主题三 · 顶刊科研封面风
-适用判断：重大发现报道，需强视觉冲击 → 一句话理由
-────────── 英文 prompt（可直接粘贴 DALL-E / Midjourney / Gemini）──────────
-A horizontal banner image at 21:9 aspect ratio (1260x540px) ...（完整填充，无残留 {}）
+主题：主题二 · 手绘信息图风
+适用判断：文章讲的是从旧方案到新方案的认知转变，因此使用问题→解决双模块。
+出图路径：prompt-only / native / adapter
+
+【English image prompt】
+...complete prompt...
 
 Negative prompt: ...
 
-────────── 中文创作说明（≤200字）──────────
-· 风格是什么
-· 哪些 {占位符} 是必填 / 哪些可省略
-· 微信 2.35:1 裁剪提示（模式B出图时见裁剪指引）
-· 若生成结果风格跑偏，可补哪几个反向关键词
+【中文创作说明】
+风格：...
+文字策略：...
+裁剪与安全区：...
+平台限制：...
+回退关键词：...
 ```
 
-若用户要 **3-4 套主题对比**，则并行输出多套（每套保留上述结构），并给一句话推荐。
+If the user asks for several directions, provide 2–4 complete prompt packages and recommend one.
 
----
+## References
 
-## 封面规格：微信标准
-
-- **画幅**：21:9 横版，渲染尺寸 1260 × 540px（= 2.333:1）。
-- **微信首图**：官方推荐比例约 **2.35:1（≈900×383）**。21:9 与 2.35:1 数值上几乎一致，prompt 中统一写 `21:9 aspect ratio (1260x540px)`，文案注明「≈ 微信标准 2.35:1 / 900×383」。
-- **模式B 出图**：DALL-E 3 无 2.35:1 尺寸 → 脚本默认请求最宽横版 `1792x1024`，出图后打印裁剪指引（宽度不变、高度裁到 ≈763px、上下居中各裁 ≈131px）。
-- **构图安全区**：核心标题与元素放在画面中部 60% 高度范围内，避免顶/底被裁。
-
----
-
-## 主题注册与扩展
-
-- 完整主题规格见 `references/cover_theme{1..4}_*.md`，注册表见 `references/theme_registry.md`。
-- **新增主题**：按 `references/theme_registry.md` 末尾的「如何新增主题」四步法操作（复制 `_theme_template.md` 脚手架 → 填写 8 章节 → 注册表加行 → 实测）。参考种子见 `references/extension_theme_examples.md`（已提炼 AI哲学风、行业洞察风，未启用）。
-
----
-
-## 质量自检清单
-
-输出前逐条检查：
-
-- [ ] prompt 为英文，可直接粘贴主流文生图模型
-- [ ] 包含画幅描述 `21:9 aspect ratio (1260x540px)`
-- [ ] **无残留 `{占位符}`**（最高频失误，务必确认）
-- [ ] negative prompt 完整存在
-- [ ] 该主题色板的全部色值已写入 prompt
-- [ ] 与所选主题 reference 的视觉骨架一致（可回看 reference 比对）
-- [ ] 已给出中文「创作说明」（风格 / 必填项 / 裁剪提示 / 跑偏反向词）
-- [ ] 模式B 时：PNG 已落盘 `assets/covers/`，裁剪指引已给出
-
-可选机械化校验：
-
-```bash
-echo "<prompt>" | bash .claude/skills/wechat-cover-design/scripts/validate-prompt.sh --all
-```
-
----
-
-## 通用对象角色（跨领域映射速查）
-
-主题 prompt 中的「蛋白/分子」等生物医药措辞已抽象为通用对象角色。映射速查：
-
-| 生物医药措辞（示例） | 通用对象角色 | AI / 科技示例 |
-|---------------------|-------------|---------------|
-| 蛋白 / 受体 / 复合体 | 核心对象 / 实体节点 | 模型组件、算法模块、数据节点 |
-| 化学分子 / 配体 / 小分子 | 小型构成单元 | token、特征、构成单元 |
-| 通路起点→终点 | 概念逻辑链 A→B→C | 数据流 / 处理管线 |
-| LNP / 递送载体 | 解决机制核心载体 | 算力平台 / 训练框架 / 载体系统 |
-
-完整映射规则见各主题 reference 的「内容映射规则」章节。
+- `references/theme_registry.md`: always read first for theme selection.
+- `references/cover_theme1_academic.md`: read for mechanism-heavy content.
+- `references/cover_theme2_handdrawn.md`: read for before/after and comparison narratives.
+- `references/cover_theme3_journal.md`: read for major findings and one-metaphor covers.
+- `references/cover_theme4_claydiorama.md`: read for multi-step workflows.
+- `references/extension_theme_examples.md`: read only when extending the theme system.
+- `scripts/validate_prompt.py`: portable prompt validation.
+- `scripts/validate-prompt.sh`: optional shell wrapper.
+- `scripts/generate-cover.js`: optional OpenAI-compatible adapter; never a core requirement.

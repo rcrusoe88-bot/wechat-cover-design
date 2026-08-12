@@ -3,6 +3,7 @@
   {"article_type": "机制解析（Transformer 注意力机制）", "expected_theme": "theme1"},
   {"article_type": "认知转变（从死磕脂质到调控细胞）", "expected_theme": "theme2"},
   {"article_type": "认知转变（从全量微调到 LoRA 低秩适配）", "expected_theme": "theme2"},
+  {"article_type": "in vivo CAR-T 抗体偶联LNP技术路径深度研究报告：把 CAR-T 工厂搬进人体的范式转变", "expected_theme": "theme2", "note": "深度报告若核心叙事是旧方案→新方案的对照，应优先 theme2，而不是因篇幅长自动归为 theme1/theme3"},
   {"article_type": "重大发现（核糖体负载与蛋白产出关系）", "expected_theme": "theme3"},
   {"article_type": "重大发现（新模型架构超越基线）", "expected_theme": "theme3"},
   {"article_type": "多步骤方法论（mRNA 加帽三步路线）", "expected_theme": "theme4"},

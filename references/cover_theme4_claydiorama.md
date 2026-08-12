@@ -75,20 +75,27 @@ description: >
 - **材质**：磨砂 polymer clay、轻微指纹感、无金属反光、无玻璃透光
 - **画风约束**：**禁止 3D 写实 / 金属 / 玻璃 / 强反光 / 等距光刻**
 
+### 2.7 文本与平台回退
+
+- 总标题可以要求 `Chinese hand-brushed text exactly: "..."`，但应控制长度并放入安全区。
+- 模块标签和配文是小字：标签尽量 4–6 个汉字，配文尽量改为英文/数字或后期叠加。
+- 需要精确显示的模块文字应预留 quiet zone，由宿主的排版/图像编辑能力后期添加；没有后期能力时交付视觉草稿和独立文字清单。
+- 本主题的右下角不再要求生成“水印”。品牌名应视为可选后期 overlay；平台强制水印无法依靠 negative prompt 删除。
+
 ## 3. 填入内容 schema
 
 调用本主题前，先在文章里识别并列模块。每个模块对应以下三项：
 
-| 占位符 | 含义 | 示例（生物医药） | 示例（AI/科技） |
+| 占位符 | 含义与长度规则 | 示例（生物医药） | 示例（AI/科技） |
 | --- | --- | --- | --- |
-| `{总标题}` | 文章主标题（≤ 30 字） | `mRNA 体外转录加帽法的三步路线` | `AI 智能体初始化五步走` |
-| `{总副标题}` | 一行说明（≤ 50 字，灰色） | `从共转录到酶法后加帽的工艺取舍` | `从环境检查到首个任务执行的路径` |
-| `{步骤数}` | 阿拉伯数字 3-5 | `3` | `5` |
-| `{步骤N小标签}` | 4-8 字糖果色块标题 | `共转录加帽` | `环境检查` |
-| `{步骤N图标描述}` | 1-2 句拟物造型（动词+名词） | `蓝色圆台上立一根带绿色螺旋帽的 RNA 试管，试管里飘着云朵状 mRNA` | `蓝色圆台上立一个闪着小灯泡的云服务器小机器人` |
-| `{步骤N配文}` | 一句话作用描述（≤ 32 字） | `一步加帽但 m1Ψ 帽占比受限制` | `确认依赖与密钥，跑通最小闭环` |
-| `{公众号名称}` | 右下角落款（从用户上下文或 config.json 读取） | `信使引擎` | — |
-| `{点缀元素清单}` | 可选远景装饰关键词 | `圆顶薄荷绿树、白色蓬松云、远景浅驼丘陵` | 同左 |
+| `{title}` | 文章主标题，≤30字 | `mRNA 体外转录加帽法的三步路线` | `AI 智能体初始化五步走` |
+| `{subtitle}` | 一行说明，≤50字 | `从共转录到酶法后加帽的工艺取舍` | `从环境检查到首个任务执行的路径` |
+| `{step_count}` | 阿拉伯数字 3–5 | `3` | `5` |
+| `{step_label_1}` | 短标签，优先 4–6 字 | `共转录加帽` | `环境检查` |
+| `{step_visual_1}` | 1–2句拟物造型 | `蓝色圆台上立一根 RNA 试管` | `云服务器小机器人` |
+| `{step_caption_1}` | 短配文，建议后期叠加 | `一步加帽` | `确认依赖` |
+| `{brand_label}` | 可选品牌名，优先后期 overlay | `信使引擎` | — |
+| `{background_accents}` | 可选远景装饰关键词 | `圆顶树、白云、浅驼丘陵` | 同左 |
 
 ## 4. Prompt 模板（21:9 横版，英文可直接喂 DALL-E / Midjourney / Gemini）
 
@@ -97,19 +104,19 @@ A horizontal banner image at 21:9 aspect ratio (1260x540px), clay diorama / poly
 
 BACKGROUND & SCENE: A continuous shallow ground plane in muted tan (#D9C09C) runs across the lower 60% of the canvas. Behind it, 3-4 softly rounded hill silhouettes in pale beige (#E8D5B7) fade into the warm sky. Two-three fluffy white polymer-clay clouds float in the upper-left sky. 3-5 cute rounded-crown trees (mint green #95CFA7 canopies, brown #8C6B4F trunks) are scattered between and behind the modules as gentle visual rhythm. The overall mood is warm, healing, tactile — like opening a children's storybook diorama.
 
-MODULE LAYOUT: {步骤数} clay-diorama modules arranged left-to-right along the ground plane, evenly spaced (90px gaps). Each module sits on a circular "cake-stand" base (diameter 150px, height 35px) whose color is taken from the clay palette (sky blue #8FB8D6, mint #95CFA7, coral pink #E89BAA, orange #E89F5C, brick red #C76B5C, lavender #A38BBA, yellow #F0CC58). On top of each base rests a small 3D cute clay-mascot/figurine/artifact (60-100px tall) representing that module. Each module has slight vertical offset (±12px) for a hand-placed, casual feel.
+MODULE LAYOUT: {step_count} clay-diorama modules arranged left-to-right along the ground plane, evenly spaced (90px gaps). Each module sits on a circular "cake-stand" base (diameter 150px, height 35px) whose color is taken from the clay palette (sky blue #8FB8D6, mint #95CFA7, coral pink #E89BAA, orange #E89F5C, brick red #C76B5C, lavender #A38BBA, yellow #F0CC58). On top of each base rests a small 3D cute clay-mascot/figurine/artifact (60-100px tall) representing that module. Each module has slight vertical offset (±12px) for a hand-placed, casual feel.
 
 MODULE CONTENTS (left to right):
 
-MODULE 1 — cake-stand base {模块1底色}. On it: {步骤1图标描述}. Above the module, a rounded-rect "pill" label in matching darker shade with white hand-brushed text "{步骤1小标签}" (16-18px, Noto Sans SC style, slight wobble). Below the module, a 1-line caption in 14px dark brown text (#2B1810): "{步骤1配文}".
+MODULE 1 — cake-stand base {module_1_color}. On it: {step_visual_1}. Above the module, a rounded-rect "pill" label in matching darker shade with white hand-brushed text "{step_label_1}" (16-18px, Noto Sans SC style, slight wobble). Below the module, leave a quiet caption zone for optional later text "{step_caption_1}".
 
-MODULE 2 — cake-stand base {模块2底色}. On it: {步骤2图标描述}. Pill label "{步骤2小标签}" above. Caption "{步骤2配文}" below.
+MODULE 2 — cake-stand base {module_2_color}. On it: {step_visual_2}. Pill label "{step_label_2}" above. Leave a quiet caption zone for "{step_caption_2}".
 
-MODULE 3 — cake-stand base {模块3底色}. On it: {步骤3图标描述}. Pill label "{步骤3小标签}" above. Caption "{步骤3配文}" below.
+MODULE 3 — cake-stand base {module_3_color}. On it: {step_visual_3}. Pill label "{step_label_3}" above. Leave a quiet caption zone for "{step_caption_3}".
 
-MODULE 4 — cake-stand base {模块4底色}. On it: {步骤4图标描述}. Pill label "{步骤4小标签}" above. Caption "{步骤4配文}" below.
+MODULE 4 — cake-stand base {module_4_color}. On it: {step_visual_4}. Pill label "{step_label_4}" above. Leave a quiet caption zone for "{step_caption_4}".
 
-MODULE 5 — cake-stand base {模块5底色}. On it: {步骤5图标描述}. Pill label "{步骤5小标签}" above. Caption "{步骤5配文}" below.
+MODULE 5 — cake-stand base {module_5_color}. On it: {step_visual_5}. Pill label "{step_label_5}" above. Leave a quiet caption zone for "{step_caption_5}".
 
 (For 3 modules, only use MODULE 1-3; for 5 modules, include all five.)
 
@@ -119,11 +126,11 @@ FOREGROUND DECORATION: scattered cute clay pebbles and tiny mushrooms at the fee
 
 TITLE BANNER (top, ~15% canvas height):
 - A rounded-rect banner across the top (background #FFF8C0 / soft cream), with a thin hand-drawn blue border (#6BA8D4, 2.5px stroke, slight wobble)
-- Inside, the main title "{总标题}" in large bold hand-brushed Chinese style (Ma Shan Zheng / 站酷快乐体, 36-40px, dark brown-black #2B1810)
-- Below, a thin subtitle in Noto Sans SC Regular, 15px, mid-brown #5A4030, single line: "{总副标题}"
+- Inside, the main title "{title}" in large bold hand-brushed Chinese style (Ma Shan Zheng / 站酷快乐体, 36-40px, dark brown-black #2B1810)
+- Below, leave a quiet subtitle zone for optional later text "{subtitle}"
 - Slight casual tilt of -0.4 degrees on the banner
 
-WATERMARK: bottom-right corner, tiny 11px light brown text "{公众号名称}".
+BRAND OVERLAY ZONE: leave a quiet bottom-right area for optional post-produced brand text "{brand_label}". Do not treat this as a generated watermark.
 
 STYLE: Clay / polymer clay / plasticine craft aesthetic — looks like a real tabletop diorama shot under soft photography light. No photorealism, no hyperreal 3D rendering, no metallic surfaces, no glass transparency, no neon, no flat vector, no information-dense infographics. Everything is round, soft, slightly imperfect, with a friendly hand-crafted vibe. The 10-color clay palette is used consistently across bases, labels, and small decorations.
 
@@ -133,8 +140,8 @@ Negative prompt: photorealistic, hyperreal 3D, metallic, glass, transparent, sha
 ## 5. 调用流程
 
 1. 当用户选定方案适合"多步骤流程 / 多模块拆解 / Setup 指南"型内容时，主 Agent 推荐主题四
-2. 从文章中提取 `{步骤1..N}` 三元组（小标签 / 图标描述 / 配文），若多于 5 个则合并或取舍到 5
-3. 从 `{配色调}` 指定每模块底色（不强求，默认循环取色板）
+2. 从文章中提取 `{step_1..N}` 三元组（短标签 / 图标描述 / 配文），若多于 5 个则合并或取舍到 5
+3. 从 `{module_N_color}` 指定每模块底色（不强求，默认循环取色板）
 4. 输出完整 prompt，**保留全部 `{}` 被替换后的最终英文**，确保可直接喂 DALL-E/Midjourney/Gemini
 5. 在 prompt 末尾附中文 **「创作说明」** 段（200 字内），告诉用户：
    - 风格是什么

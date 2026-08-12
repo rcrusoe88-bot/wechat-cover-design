@@ -106,6 +106,13 @@ description: >
 
 ## 5. Prompt 工程要点
 
+### 5.1 文本与平台回退
+
+- 顶刊封面优先使用单一视觉隐喻，不把小字当作画面主体。
+- 如需标题，只放一条短标题并要求 `Chinese text exactly: "..."`；领域锚点和品牌名尽量后期叠加。
+- 留出顶部或底部 quiet zone 供宿主排版工具使用，不能保证生成模型准确渲染小字号中文。
+- `watermark` 只能约束视觉内容，无法可靠移除平台强制水印；有平台标识的输出应标记为预览稿。
+
 1. **主视觉描述要具体**：不要只写 "a glowing object"，要写 "a semi-transparent nanoparticle with visible internal cargo strands, glowing from within with soft blue bioluminescence"
 2. **光影方向明确**：指定单一光源方向（如 "volumetric light rays from upper-left"），避免平面光
 3. **景深分层**：明确哪些元素 sharp、哪些 soft、哪些 semi-transparent
