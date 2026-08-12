@@ -7,13 +7,19 @@
   {"article_type": "重大发现（核糖体负载与蛋白产出关系）", "expected_theme": "theme3"},
   {"article_type": "重大发现（新模型架构超越基线）", "expected_theme": "theme3"},
   {"article_type": "多步骤方法论（mRNA 加帽三步路线）", "expected_theme": "theme4"},
-  {"article_type": "多步骤方法论（AI 智能体初始化五步）", "expected_theme": "theme4"},
-  {"article_type": "Setup 指南（云平台搭建四要素）", "expected_theme": "theme4"},
+  {"article_type": "LNP 进入 T 细胞并完成内涵体逃逸的五步机制", "expected_theme": "theme4"},
+  {"article_type": "AI 智能体初始化五步", "expected_theme": "theme1_or_custom", "note": "theme4 已替换为生物医学粘土剖面，不再默认承接通用 Setup"},
   {"article_type": "行业趋势（LNP 平台叙事转向应用价值）", "expected_theme": "theme3_or_extension"},
   {"article_type": "观点判断（mRNA 疫苗后疫情时代走向）", "expected_theme": "theme3_or_extension"},
 
   {"article_type": "单点深机制", "expected_theme": "theme1", "note": "不推荐 theme4"},
   {"article_type": "重磅新闻事件", "expected_theme": "theme3", "note": "不推荐 theme2/theme4"},
   {"article_type": "信息密度高的小数据图", "expected_theme": "theme1", "note": "不推荐 theme4"},
-  {"article_type": "单模块单图", "expected_theme": "theme2", "note": "不推荐 theme4"}
+  {"article_type": "单模块单图", "expected_theme": "theme2", "note": "不推荐 theme4"},
+  {"article_type": "生物医药平台估值远超临床证据", "expected_theme": "theme6"},
+  {"article_type": "全球体内 CAR-T 企业管线与技术路线竞争", "expected_theme": "theme11"},
+  {"article_type": "I 期临床剂量递增、疗效与安全性比较", "expected_theme": "theme12"},
+  {"article_type": "抗体-PEG-LNP 连接结构与配体密度设计", "expected_theme": "theme15"},
+  {"article_type": "tLNP 成粒、偶联、TFF 纯化与质量控制", "expected_theme": "theme16"},
+  {"article_type": "纳米颗粒与 CD8 T 细胞表面受体结合的显微观察", "expected_theme": "theme8"}
 ]

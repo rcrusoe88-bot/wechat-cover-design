@@ -2,8 +2,8 @@
 name: wechat-cover-design
 description: >
   Design WeChat Official Account cover images from an article, title, outline, or content brief.
-  Analyze the content, choose among academic mechanism, hand-drawn infographic, journal-cover,
-  and clay-diorama visual systems, then produce a complete English image-generation prompt and
+  Analyze the content, choose among sixteen registered scientific, editorial, commercial,
+  documentary, diagrammatic, and biopharma visual systems, then produce a complete English image-generation prompt and
   a Chinese production note. Use when the user asks for a WeChat cover, article cover, cover image,
   cover prompt, banner art, visual cover direction, or image generation for a public-account article.
   It also covers Chinese requests such as 公众号封面、封面图、设计封面、封面提示词 and 公众号首图.
@@ -61,15 +61,28 @@ Compress the information before writing the prompt. A cover is not a miniature a
 
 ### 2. Choose a theme
 
-Read `references/theme_registry.md`, then read only the selected theme reference. Use these defaults:
+Read `references/theme_registry.md`, then read only the selected theme reference. Use these defaults.
+Honor an explicit registered style choice directly.
 
 | Article signal | Theme |
 | --- | --- |
 | Mechanism, concept chain, dense technical structure | Theme 1 — academic mechanism diagram |
 | Before/after shift, pain point → solution, technical comparison | Theme 2 — hand-drawn infographic |
 | Major finding, deep interpretation, one strong metaphor, high impact | Theme 3 — journal cover art |
-| Setup guide, method, workflow, 3–5 parallel modules | Theme 4 — clay diorama |
+| Biological mechanism or delivery chain needing a tactile, approachable explanation | Theme 4 — biomedical clay cutaway |
 | Trend or opinion | Theme 3 by default; offer an extension theme only when the user wants a different editorial system |
+| Major scientific breakthrough or platform launch | Theme 5 — Nature scientific concept |
+| Valuation, transactions, evidence mismatch, commercial controversy | Theme 6 — Businessweek metaphor |
+| Industry ecosystem, R&D-to-clinic panorama, supply chain | Theme 7 — Monocle industry observation |
+| Microscopic binding, nanodelivery, tissue microenvironment | Theme 8 — microscopic documentary |
+| One core proposition or binary relationship | Theme 9 — Swiss poster |
+| Patents, technical history, engineering barriers | Theme 10 — science archive |
+| Pipelines, competing routes, milestones, company landscape | Theme 11 — pipeline map |
+| Clinical evidence, efficacy/safety, cohorts, dose escalation | Theme 12 — clinical evidence brief |
+| Cellular mechanism, delivery chain, signaling pathway | Theme 13 — Cell mechanism atlas |
+| Annual review, congress recap, translational milestone | Theme 14 — medical congress key visual |
+| Molecular design, conjugation, formulation, structural IP | Theme 15 — molecular blueprint |
+| CMC, scale-up, TFF, purification, QC, CDMO | Theme 16 — bioprocess engineering |
 
 If two themes are genuinely plausible, present both with one-sentence reasons and ask the user to choose.
 Honor an explicit theme choice. Do not keep recommending a theme the user rejected.
@@ -88,7 +101,7 @@ negative prompt. Keep the main title and any exact text short enough for the sel
 
 Use this policy for every theme:
 
-- Main title: may request exact Chinese rendering with a quoted string and an explicit exact-text instruction.
+- Main title: default to text-free artwork plus a post-produced title. Request exact Chinese rendering only when the user explicitly accepts possible generation errors.
 - Module title: keep short; request exact rendering only when it is important.
 - Small labels, captions, annotations, and chart labels: keep to roughly 4–6 Chinese characters where possible,
   or use English/Latin abbreviations. Do not put long Chinese prose into tiny generated text.
@@ -161,7 +174,8 @@ If the user asks for several directions, provide 2–4 complete prompt packages 
 - `references/cover_theme1_academic.md`: read for mechanism-heavy content.
 - `references/cover_theme2_handdrawn.md`: read for before/after and comparison narratives.
 - `references/cover_theme3_journal.md`: read for major findings and one-metaphor covers.
-- `references/cover_theme4_claydiorama.md`: read for multi-step workflows.
+- `references/cover_theme4_claydiorama.md`: read for tactile biomedical mechanisms and continuous cellular cutaways.
+- `references/cover_themes5_16_selected.md`: read the selected theme5-theme16 section for editorial and biopharma styles.
 - `references/extension_theme_examples.md`: read only when extending the theme system.
 - `scripts/validate_prompt.py`: portable prompt validation.
 - `scripts/validate-prompt.sh`: optional shell wrapper.
