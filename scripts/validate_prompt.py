@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""Portable prompt checks for wechat-cover-design.
+
+Reads UTF-8 prompt text from stdin and returns 0 only when every selected check passes.
+"""
+
+from __future__ import annotations
+
+import argparse
+import re
+import sys
+
+
+def check_no_placeholders(text: str) -> tuple[bool, str]:
+    found = re.findall(r"\{[^{}]*\}", text)
+    if found:
+        return False, f"unresolved placeholders: {', '.join(found[:5])}"
+    return True, "no unresolved placeholders"
+
+
+def check_negative(text: str) -> tuple[bool, str]:
+    ok = bool(re.search(r"negative\s+prompt\s*:", text, re.I)) or bool(
+        re.search(r"\bavoid\s*:", text, re.I)
+    )
+    return ok, "contains a negative/avoid section" if ok else "missing Negative prompt or Avoid section"
+
+
+def check_ratio(text: str) -> tuple[bool, str]:
+    ok = bool(re.search(r"21\s*:\s*9|2\.3[3-5]\s*:\s*1|\b\d+\s*x\s*\d+\b", text, re.I))
+    return ok, "contains a ratio or explicit dimensions" if ok else "missing ratio or dimensions"
+
+
+def check_length(text: str) -> tuple[bool, str]:
+    count = len(text)
+    ok = 300 <= count <= 8000
+    return ok, f"length {count} characters" if ok else f"length {count} outside 300–8000 characters"
+
+
+def check_text_strategy(text: str) -> tuple[bool, str]:
+    patterns = [
+        r"exact(?:ly)?\s+(?:render|display|text)",
+        r"small\s+(?:labels?|text|captions?)",
+        r"post[- ]?process|overlay|quiet zone|quiet area|后期|小字",
+    ]
+    ok = any(re.search(pattern, text, re.I) for pattern in patterns)
+    return ok, "contains a text-rendering strategy" if ok else "missing a text-rendering strategy"
+
+
+def run(text: str, args: argparse.Namespace) -> int:
+    checks = []
+    if args.all or args.no_placeholders:
+        checks.append(check_no_placeholders)
+    if args.all or args.has_negative:
+        checks.append(check_negative)
+    if args.all or args.has_ratio:
+        checks.append(check_ratio)
+    if args.all or args.length:
+        checks.append(check_length)
+    if args.all or args.text_strategy:
+        checks.append(check_text_strategy)
+
+    failed = False
+    for check in checks:
+        ok, message = check(text)
+        print(("PASS" if ok else "FAIL") + ": " + message)
+        failed = failed or not ok
+    if args.all:
+        print("\n" + ("All checks passed." if not failed else "One or more checks failed."))
+    return 1 if failed else 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Validate a wechat-cover-design prompt from stdin.")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--all", action="store_true")
+    group.add_argument("--no-placeholders", dest="no_placeholders", action="store_true")
+    group.add_argument("--has-negative", dest="has_negative", action="store_true")
+    group.add_argument("--has-ratio", dest="has_ratio", action="store_true")
+    group.add_argument("--length", action="store_true")
+    group.add_argument("--text-strategy", dest="text_strategy", action="store_true")
+    args = parser.parse_args()
+    return run(sys.stdin.read(), args)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

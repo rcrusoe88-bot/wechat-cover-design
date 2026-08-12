@@ -100,6 +100,13 @@ prompt 中需要用自然语言精确描述两区域布局：
 - 文字模糊
 - 水印
 
+## 4.1 文本与平台回退
+
+- 主标题可使用 `Chinese hand-brushed text exactly: "..."`；副标题和模块标题应尽量短。
+- 图注、步骤说明、统计标签等小字建议控制为 4–6 个汉字或改用英文/数字。长中文不要塞进小字号生成文本。
+- 需要精确的小字应预留无文字 quiet zone，交由宿主的排版或图像编辑能力后期叠加；无后期能力时单独交付文字清单并标记为视觉草稿。
+- negative prompt 可以减少视觉水印，但无法可靠去除宿主或平台强制添加的水印；带平台标识的结果只能标记为预览稿。
+
 ---
 
 ## 5. Prompt 构建模板
@@ -130,7 +137,7 @@ prompt 中需要用自然语言精确描述两区域布局：
 | 对比数据（如"100倍/7倍"） | 右模块底部柱状图，含倍数标注 | 双柱对比图 |
 | 关键尺寸参数 | 右模块中部尺子图标 + 数值 | 尺子图标 |
 | 文章主标题 | 顶部标题栏左侧，≤28 字 | 手写大字 |
-| 核心问题/副标题 | 顶部标题栏右侧黄色小框 | 副标题小框 |
+| 核心问题/副标题 | 顶部标题栏右侧黄色小框，建议≤18字 | 副标题小框 |
 
 ### 双领域填充示例
 
@@ -155,13 +162,13 @@ A horizontal banner image at 21:9 aspect ratio (1260x540px), hand-drawn infograp
 
 The composition has a top title bar and a two-column content area below:
 
-TOP TITLE BAR (15% height, ~81px): A yellow sticky-note-style banner (#FFF8C0 background) with a blue hand-drawn border (#6BA8D4, 2.5px). Inside, the main title "{文章标题}" is written in large bold hand-brushed Chinese text (Ma Shan Zheng style, ~32px, dark brown-black #2B1810). To the right of the title, a small yellow rounded-rect tag (#FFF8C0 with blue #6BA8D4 border) contains a subtitle in 18px text: "{副标题10-18字}". The banner has a very slight tilt (rotate -0.3 degrees) for a casual feel.
+TOP TITLE BAR (15% height, ~81px): A yellow sticky-note-style banner (#FFF8C0 background) with a blue hand-drawn border (#6BA8D4, 2.5px). Inside, the main title "{title}" is written in large bold hand-brushed Chinese text (Ma Shan Zheng style, ~32px, dark brown-black #2B1810). To the right of the title, a small yellow rounded-rect tag (#FFF8C0 with blue #6BA8D4 border) contains a subtitle in 18px text: "{subtitle}". The banner has a very slight tilt (rotate -0.3 degrees) for a casual feel.
 
 CONTENT AREA (85% height, ~459px): Split into two rounded-rect panels side by side with a hand-drawn green arrow (#5CA86A) pointing from left to right between them.
 
-LEFT PANEL — "The Problem" (42% width): A mint green card (#D4EDDA background) with a green hand-drawn border (#5C9E6B, 2.5px), slightly tilted (rotate -0.5deg), with a subtle paper shadow (3px 4px offset, 15% opacity). Inside: a bold module title "{问题主题}" at 22px. Below it, a large circle (140px diameter) with light blue fill (#EDF5FB) and a dark brown (#2B1810, 3px) hand-drawn border, containing the core problem concept "{核心问题A}" labeled inside. A red (#E03030) hand-drawn ellipse highlights a key alarming statistic (e.g., "98%") inside or near the circle. A tilted red exclamation mark (!) decoration floats nearby. Below the circle, 2-3 short annotation lines in 14px brown text (#5A4030) explain the pain points.
+LEFT PANEL — "The Problem" (42% width): A mint green card (#D4EDDA background) with a green hand-drawn border (#5C9E6B, 2.5px), slightly tilted (rotate -0.5deg), with a subtle paper shadow (3px 4px offset, 15% opacity). Inside: a bold module title "{problem_title}" at 22px. Below it, a large circle (140px diameter) with light blue fill (#EDF5FB) and a dark brown (#2B1810, 3px) hand-drawn border, containing the core problem concept "{problem_object}" labeled inside. A red (#E03030) hand-drawn ellipse highlights a key alarming statistic (e.g., "98%") inside or near the circle. A tilted red exclamation mark (!) decoration floats nearby. Below the circle, 2-3 short annotation lines in 14px brown text (#5A4030) explain the pain points.
 
-RIGHT PANEL — "The Solution" (58% width): A warm orange-white card (#FFF3E0 background) with an orange hand-drawn border (#E8872A, 2.5px), slightly tilted (rotate +0.3deg), same paper shadow. Inside: a bold module title "{解决主题}" at 22px. Below it, an organic egg-shaped structure (the solution's core carrier): an outer orange shell ellipse (#F09050, 90% opacity, ~160x190px) with radiating lines, and an inner golden core ellipse (#F5C518). The structure represents "{核心解决对象}". Around it, 2-3 annotation lines in 14px brown text explain the mechanism. At the bottom right, a simple two-bar chart: a short blue bar (#7BACD4) for the control group and a tall orange bar (#F09050) for the experimental group, with a bold "7×" or "{倍数}" multiplier label in 20px dark text above the tall bar. A blue (#4A7FC0) tilted question mark decoration and small yellow 4-point stars (#FFDA00 with black stroke) add visual interest.
+RIGHT PANEL — "The Solution" (58% width): A warm orange-white card (#FFF3E0 background) with an orange hand-drawn border (#E8872A, 2.5px), slightly tilted (rotate +0.3deg), same paper shadow. Inside: a bold module title "{solution_title}" at 22px. Below it, an organic egg-shaped structure (the solution's core carrier): an outer orange shell ellipse (#F09050, 90% opacity, ~160x190px) with radiating lines, and an inner golden core ellipse (#F5C518). The structure represents "{solution_object}". Around it, 2-3 annotation lines in 14px brown text explain the mechanism. At the bottom right, a simple two-bar chart: a short blue bar (#7BACD4) for the control group and a tall orange bar (#F09050) for the experimental group, with a bold "7×" or "{multiplier}" label in 20px dark text above the tall bar. A blue (#4A7FC0) tilted question mark decoration and small yellow 4-point stars (#FFDA00 with black stroke) add visual interest.
 
 Between the two panels, a large curved hand-drawn arrow in green (#5CA86A, 4px stroke) points from left to right, connecting the problem to the solution.
 

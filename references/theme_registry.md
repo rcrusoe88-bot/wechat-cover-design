@@ -7,7 +7,7 @@ description: >
 
 # 主题注册表
 
-本文件是 `wechat-cover-design` 的常驻上下文。SKILL.md 通过本表引用主题，具体主题规格文件按需 `Read`，避免一次性加载全部主题导致上下文膨胀。
+本文件是 `wechat-cover-design` 的主题选择入口。SKILL.md 通过本表引用主题，具体主题规格文件按需读取，避免一次性加载全部主题导致上下文膨胀。
 
 ## 主题索引
 
@@ -26,7 +26,7 @@ description: >
 | 认知转变 / 痛点-解方 / 技术对比 | theme2 | 暖米纸感 + 对比数据，亲切有温度 |
 | 重大发现 / 深度解读 | theme3 | 暗色发光主体，视觉隐喻，一眼震撼 |
 | 多步骤方法论 / Setup 指南 | theme4 | 圆台底座一字排开，治愈系展柜 |
-| 行业趋势 / 观点判断 | theme3 或扩展主题 | 可用「行业洞察风」扩展种子（extension_theme_examples.md） |
+| 行业趋势 / 观点判断 | theme3（默认）或扩展主题 | 默认用单一视觉隐喻；只有用户需要不同编辑体系时才读取扩展种子 |
 
 匹配规则：若两个候选主题都成立，各给一句话理由让用户二选一；用户指定则直接采用；否定后重新匹配，不重复推荐已否主题。
 
@@ -45,11 +45,8 @@ description: >
 用户或主 Agent 想加入新封面风格时，按以下四步操作：
 
 **① 复制脚手架并填写**
-```bash
-cp .claude/skills/wechat-cover-design/references/_theme_template.md \
-   .claude/skills/wechat-cover-design/references/cover_theme5_你的主题.md
-```
-按模板的 8 章节填写。**视觉骨架必须包含色板色值 + negative prompt**（这是主题可运行性的底线）。
+
+从本 skill 目录复制 `references/_theme_template.md` 为新的 `cover_themeN_name.md`。按模板填写。**视觉骨架必须包含色板色值 + negative prompt**，并提供中文小字和平台水印的回退策略。
 
 **② 注册表加行**
 在本文档「主题索引」表追加一行（主题ID / 主题名 / reference 文件 / 触发场景 / 内容 schema 核心）。
@@ -58,4 +55,4 @@ cp .claude/skills/wechat-cover-design/references/_theme_template.md \
 若新主题需要更强的自动匹配，更新 SKILL.md Step 2 的类型规则与触发词。新主题通常**不需要**改 SKILL.md frontmatter（避免常驻上下文膨胀）。
 
 **④ 实测**
-用一篇真实文章跑一次「主题 → 填占位符 → 输出英文 prompt → validate-prompt.sh」，确认无残留 `{}`、可运行；可把该用例写入 `evals/theme_match_eval.json` 做回归。
+用一篇真实文章跑一次「主题 → 填占位符 → 输出英文 prompt → validate_prompt.py」，确认无残留 `{}`、可运行；可把该用例写入 `evals/theme_match_eval.json` 做回归。

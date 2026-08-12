@@ -1,141 +1,92 @@
-# WeChat Cover Design — 公众号封面图设计 Skill
+# WeChat Cover Design
 
-> 一个专注于**公众号封面图设计**的 Claude Code Skill：输入文章正文，分析内容类型并自动匹配视觉主题，输出可直接喂 DALL-E / Midjourney / Gemini 的英文文生图 prompt（模式A），或调用 OpenAI 兼容 Images API 直接出图保存 PNG（模式B）。
->
-> 适用于 **AI / 科技、生物医药** 等多领域公众号内容。
+一个宿主无关的公众号封面设计 Skill：从文章、标题、提纲或内容 brief 中提炼视觉核心，匹配四套视觉主题，输出可直接交给文生图工具的英文 prompt 和中文创作说明。
 
-## 功能特性
+## 核心原则
 
-- 🎨 **4 套视觉主题**（按文章类型自动匹配）：
-  - 主题一 · 学术机制图风（白底三栏、5 色科学配色，机制解析类）
-  - 主题二 · 手绘信息图风（暖米纸感、「从X到Y」认知转变 + 对比数据）
-  - 主题三 · 顶刊科研封面风（暗色背景 + 发光主体 + 视觉隐喻，重大发现类）
-  - 主题四 · 粘土泥塑微缩风（圆台底座一字排开，多步骤方法论类）
-- ✍️ **双模式交付**：英文 prompt（模式A）/ 调 API 直接出图（模式B）
-- 📐 **微信标准尺寸**：21:9（≈ 微信 2.35:1 / 900×383）
-- 🔌 **多 provider 兼容**：OpenAI 兼容 Images API，可接国内服务商
-- ➕ **可扩展**：内置新增主题脚手架（`references/_theme_template.md`）+ 扩展种子（AI哲学风/行业洞察风）
-- ✅ **质量自检**：内置 prompt 校验脚本（残留占位符 / negative prompt / 画幅 / 长度）
+- **Prompt-first**：任何能加载 `SKILL.md` 的 Agent 都能完成核心工作。
+- **工具协商**：有宿主原生生图能力就用原生能力；没有就交付 prompt，不因缺少 API Key 失败。
+- **后期优先处理精确小字**：生成模型适合标题级文字，不适合长中文注释、图表标签和小字号正文。
+- **水印诚实标注**：negative prompt 只能约束视觉内容，通常不能去掉平台强制水印。
+- **尺寸按比例处理**：目标约为 2.35:1，裁剪判断根据实际宽高，不绑定某个模型的固定尺寸。
 
-## 快速开始
+## 四套主题
 
-### 模式A · 只输出 prompt
+- 主题一：学术机制图风——机制解析、概念逻辑链、信息密度高。
+- 主题二：手绘信息图风——从旧到新、痛点到解决方案、技术对比。
+- 主题三：顶刊科研封面风——重大发现、深度解读、单一强视觉隐喻。
+- 主题四：粘土泥塑微缩风——多步骤方法论、Setup 指南、工作流拆解。
 
-向 Claude 提供文章正文，说「设计封面」，即可获得匹配主题的英文 prompt + 中文创作说明，直接粘贴到 DALL-E / Midjourney / Gemini 使用。
+## 使用方式
 
-### 模式B · 直接出图（需配置 API Key）
+把文章或内容 brief 交给支持 Skill 的 Agent，并提出“设计公众号封面”或“生成封面 prompt”。Skill 会：
 
-确认方案后，Claude 会执行：
+1. 抽取内容类型、读者钩子、核心对象链、关键数据和文字清单；
+2. 读取主题注册表并选择一个主题；
+3. 按选定主题填充 prompt；
+4. 根据宿主能力选择原生出图、可选适配器或 prompt-only；
+5. 在交付前检查占位符、画幅、主题骨架、文字策略和水印状态。
 
-```bash
-node .claude/skills/wechat-cover-design/scripts/generate-cover.js \
-  --prompt "<完整英文prompt>" \
-  --theme theme3 \
-  --name "LNP-delivery-cover"
+## 出图路径
+
+优先级如下：
+
+1. 宿主原生文生图工具；
+2. 宿主提供的图像 API 或连接器；
+3. 本仓库的可选 OpenAI-compatible 适配器；
+4. 只交付英文 prompt。
+
+本仓库不假设任何 Agent 名称、安装目录、命令行环境或输出目录。若使用适配器，路径和输出目录由宿主决定。
+
+## 可选脚本
+
+### Prompt 校验
+
+推荐使用跨平台 Python 校验器：
+
+```text
+python scripts/validate_prompt.py --all < prompt.txt
 ```
 
-图片保存到 `assets/covers/cover-{theme}-{时间戳}.png`，同时打印微信 2.35:1 裁剪指引。
+没有 Python 时，可以使用 shell wrapper：
 
-## API 配置指南
-
-脚本配置优先级：**CLI 参数 > 环境变量 > config.json**。
-
-### 方式一：环境变量（推荐）
-
-```bash
-# Windows (CMD)
-set OPENAI_API_KEY=sk-xxx
-set OPENAI_BASE_URL=https://api.openai.com/v1
-
-# Windows (PowerShell)
-$env:OPENAI_API_KEY="sk-xxx"
-
-# Git Bash / macOS / Linux
-export OPENAI_API_KEY=sk-xxx
+```text
+bash scripts/validate-prompt.sh --all < prompt.txt
 ```
 
-可选：`COVER_IMAGE_MODEL`（默认 `dall-e-3`）。
+校验器检查残留占位符、画幅描述、Negative prompt、长度和文本策略提示。它是辅助工具，不是 Skill 的运行前提。
 
-### 方式二：config.json
+### OpenAI-compatible 适配器
 
-在 `scripts/` 目录创建 `config.json`（已被 .gitignore 忽略，key 不入库）：
+`scripts/generate-cover.js` 只用于宿主明确支持 Node.js、网络请求和 OpenAI-compatible Images API 的情况。它需要 API Key 和 provider 配置；没有这些条件时，请走宿主原生工具或 prompt-only 路径。
 
-```json
-{
-  "base_url": "https://api.openai.com/v1",
-  "api_key": "sk-xxx",
-  "model": "dall-e-3",
-  "default_size": "1792x1024",
-  "output_dir": "assets/covers"
-}
-```
-
-### 方式三：国内兼容 provider
-
-OpenAI 直连在中国大陆可能受限。多数国内服务商提供 OpenAI 兼容的 `/images/generations` 接口，只需切换 `base_url`（及对应 `api_key`、`model`、`size`）：
-
-| 服务商 | base_url 示例 | 备注 |
-|--------|---------------|------|
-| OpenAI | `https://api.openai.com/v1` | 官方 |
-| 阿里云百炼（通义万相） | `https://dashscope.aliyuncs.com/compatible-mode/v1` | 需查文生图 model 名 |
-| 智谱 AI | `https://open.bigmodel.cn/api/paas/v4` | 需查 image model |
-| 硅基流动 | `https://api.siliconflow.cn/v1` | 需查 image model |
-| 其他 OpenAI 兼容服务 | 依其文档 | — |
-
-> 各 provider 的 `model` 名与 `size` 支持需查其官方文档。不兼容时脚本会**透传 provider 的错误信息**，便于排查。若 provider 支持自定义比例（如 `900x383`），可用 `--size 900x383` 精确生成。
-
-## 触发词
-
-`封面`、`封面图`、`设计封面`、`生成封面`、`封面提示词`、`封面prompt`、`封面风格`、`配图`、`文生图`、`出图`、`cover image` 等。
-
-> **消歧**：本 skill 只做封面图，不含标题与摘要。需要「标题+摘要+封面」时请用 `wechat-title-summary`。
-
-## 校验命令
-
-```bash
-# 校验一个 prompt 是否合格（残留占位符 / negative / 画幅 / 长度）
-echo "<prompt>" | bash .claude/skills/wechat-cover-design/scripts/validate-prompt.sh --all
-
-# 单独校验
-echo "<prompt>" | bash .claude/skills/wechat-cover-design/scripts/validate-prompt.sh --no-placeholders
-```
+适配器支持 `--size WIDTHxHEIGHT`。它会按照实际比例输出微信封面的裁剪或补边指引，不再只识别某一个固定尺寸。
 
 ## 目录结构
 
-```
+```text
 wechat-cover-design/
-├── SKILL.md                        # 主定义：五步工作流、触发词、双模式交付、质量自检
-├── skill.json                      # 元数据
-├── README.md                       # 本文件
+├── SKILL.md
+├── skill.json
+├── README.md
 ├── references/
-│   ├── theme_registry.md           # 主题注册表 + 新增主题四步法
-│   ├── _theme_template.md          # 新增主题脚手架模板
-│   ├── cover_theme1_academic.md    # 主题一：学术机制图风
-│   ├── cover_theme2_handdrawn.md   # 主题二：手绘信息图风
-│   ├── cover_theme3_journal.md     # 主题三：顶刊科研封面风
-│   ├── cover_theme4_claydiorama.md # 主题四：粘土泥塑微缩风
-│   └── extension_theme_examples.md # 扩展主题种子（AI哲学风/行业洞察风，未启用）
+│   ├── theme_registry.md
+│   ├── _theme_template.md
+│   ├── cover_theme1_academic.md
+│   ├── cover_theme2_handdrawn.md
+│   ├── cover_theme3_journal.md
+│   └── cover_theme4_claydiorama.md
 ├── scripts/
-│   ├── generate-cover.js           # 模式B：OpenAI 兼容 Images API 出图
-│   └── validate-prompt.sh          # prompt 质量校验
+│   ├── generate-cover.js
+│   ├── validate_prompt.py
+│   └── validate-prompt.sh
 └── evals/
-    ├── trigger_eval.json           # 触发词评估
-    └── theme_match_eval.json       # 主题匹配评估
+    ├── trigger_eval.json
+    └── theme_match_eval.json
 ```
 
-## 新增主题（四步法）
+新增主题时，复制 `references/_theme_template.md`，补齐色板、布局、内容 schema、英文 prompt、Negative prompt、回退策略和主题区分表，再登记到 `references/theme_registry.md` 并加入真实 eval。
 
-1. 复制脚手架：`cp references/_theme_template.md references/cover_theme5_xxx.md`，按 8 章节填写（**必须含色板 + negative prompt**）
-2. 在 `references/theme_registry.md` 注册表加一行
-3. 按需更新 SKILL.md Step 2 匹配规则
-4. 用真实文章实测 + 写入 `evals/theme_match_eval.json`
+## 与标题摘要 Skill 的关系
 
-扩展主题种子（AI哲学风 / 行业洞察风）见 `references/extension_theme_examples.md`。
-
-## 与 wechat-title-summary 的关系
-
-本 skill 从 `wechat-title-summary` 剥离并优化而来，**原 skill 保持不动**：
-- `wechat-title-summary`：标题 + 摘要 + 封面（三合一，生物医药垂直，GitHub 托管）
-- `wechat-cover-design`：仅封面（多领域泛化，双模式出图，可扩展）
-
-> 迁移说明：本 skill 的 4 套主题视觉骨架（色板/布局/材质/negative prompt）与 `wechat-title-summary` 1:1 对应，仅将内容映射规则泛化为「通用对象角色」并补充 AI/科技示例。
+本 Skill 只负责封面设计，不负责标题和摘要。用户同时需要标题、摘要和封面时，可由宿主协调标题摘要 Skill，再把最终标题和内容 brief 交给本 Skill。

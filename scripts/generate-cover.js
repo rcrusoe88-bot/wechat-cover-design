@@ -154,18 +154,33 @@ async function main() {
   log(`✅ 已保存: ${pngPath}`);
   log(`📝 备忘: ${memoPath}`);
 
-  // ---------- 微信 2.35:1 裁剪指引 ----------
-  if (/^1792x1024$/i.test(size)) {
-    const targetH = Math.round(1792 / 2.35);     // ≈ 763px
-    const cropH = Math.round((1024 - targetH) / 2); // ≈ 131px
-    console.log('\n✂️   微信 2.35:1 裁剪指引（当前 1792x1024 = 1.75:1）：');
-    console.log(`  目标高度 ≈ ${targetH}px（宽度 1792 不变），上下居中各裁约 ${cropH}px。`);
-    console.log('  构图时请把核心标题/元素放在画面中部安全区，避免顶/底被裁。');
-    if (crop) {
-      console.log('  ⚠️  --crop 自动居中裁剪需可选依赖 sharp；未安装则跳过，仅输出本指引。');
+  // ---------- 微信 2.35:1 裁剪/补边指引 ----------
+  const match = String(size).match(/^(\d+)x(\d+)$/i);
+  if (match) {
+    const width = Number(match[1]);
+    const height = Number(match[2]);
+    const actualRatio = width / height;
+    const targetRatio = 2.35;
+    const tolerance = 0.02;
+    if (Math.abs(actualRatio - targetRatio) <= tolerance) {
+      console.log(`\n✅   画幅接近微信封面比例：${width}x${height}（${actualRatio.toFixed(3)}:1）。无需裁剪。`);
+    } else if (actualRatio < targetRatio) {
+      const targetH = Math.round(width / targetRatio);
+      const cropH = Math.max(0, Math.round((height - targetH) / 2));
+      console.log(`\n✂️   微信约 2.35:1 裁剪指引（当前 ${width}x${height} = ${actualRatio.toFixed(3)}:1）：`);
+      console.log(`  保持宽度 ${width}px，将高度裁到约 ${targetH}px；上下居中各裁约 ${cropH}px。`);
+      console.log('  构图时把标题和关键元素放在画面中部 60% 安全区，避免顶部/底部被裁。');
+      if (crop) {
+        console.log('  ⚠️  --crop 自动居中裁剪仍需可选依赖 sharp；未安装则只输出本指引。');
+      }
+    } else {
+      const targetW = Math.round(height * targetRatio);
+      const padW = Math.max(0, Math.round((width - targetW) / 2));
+      console.log(`\n↔️   微信约 2.35:1 补边/裁剪指引（当前 ${width}x${height} = ${actualRatio.toFixed(3)}:1）：`);
+      console.log(`  可将宽度裁到约 ${targetW}px（左右各裁约 ${padW}px），或在左右补边后再发布。`);
     }
-  } else if (!/^\d+x\d+$/i.test(size)) {
-    console.log(`\n✂️   自定义尺寸「${size}」：请按 provider 文档确认实际输出比例是否接近 2.35:1。`);
+  } else {
+    console.log(`\n✂️   自定义尺寸「${size}」无法解析：请按 provider 实际输出宽高确认是否接近 2.35:1。`);
   }
 }
 
