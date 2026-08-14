@@ -59,6 +59,60 @@ Read the supplied article or brief and record:
 
 Compress the information before writing the prompt. A cover is not a miniature article.
 
+### 1.2 Content-alignment gate (mandatory)
+
+Before selecting a theme or drafting an image prompt, write a compact **Alignment Record**. Do not
+generate an image until every field is filled and passes the rules below.
+
+| Field | Requirement |
+| --- | --- |
+| Article thesis | One sentence stating what the article is actually saying, not its broad topic or its keywords. |
+| Reader takeaway | One change in understanding the reader should get in three seconds. |
+| Content class | Choose one: personal showcase, opinion, method, mechanism, trend, transaction, controversy, evidence, or industry landscape. |
+| Theme rationale | Explain why the selected theme serves the thesis and content class. A theme must not be chosen solely because a domain keyword appears. |
+| Visual metaphor | One concrete scene that expresses the thesis. State the intended relationship, not just the objects. |
+| Element provenance | List every proposed focal or supporting element with its source: `thesis`, `reader takeaway`, or a specific article sentence/section. |
+| Forbidden substitutions | List plausible-but-wrong visual shortcuts suggested by keywords that the article does not discuss. |
+
+Apply these non-negotiable rules:
+
+1. **Thesis over keywords.** Do not convert a profession, industry, or named tool into the main image
+   unless the article is actually about that profession's mechanism, industry economics, or tool itself.
+2. **One-hop provenance.** Every focal object and every supporting object must have a direct entry in
+   `Element provenance`. Remove any object that cannot be traced to the thesis, takeaway, or a concrete
+   article detail. Do not add generic visual filler just because it belongs to the field.
+3. **Theme fit.** Reject a theme when its default narrative conflicts with the content class. In
+   particular, do not use Businessweek-style conflict, valuation, or pressure metaphors for a personal
+   showcase unless the article itself makes a sharp commercial claim.
+4. **Metaphor test.** Complete this sentence: `The reader sees [relationship], therefore understands
+   [article thesis].` If it cannot be completed plainly, replace the metaphor.
+5. **Counterfactual test.** Ask: `Could this image plausibly illustrate a different article merely
+   because it mentions the same domain?` If yes, make the visual more specific to the article's actual
+   claim or change the theme.
+
+For a personal showcase, prioritize the person's point of view, body of work, working method, and
+brand language. Do not let domain props become the story unless they are central to the article.
+
+### 1.3 Lock the title composition before generating artwork
+
+When a cover needs an exact title, treat typography as a first-class visual object, not a label applied after the artwork is complete. Before drafting the image prompt, record:
+
+| Field | Requirement |
+| --- | --- |
+| Title block | exact main title, optional subtitle, and maximum line count |
+| Title zone | one fixed, theme-appropriate region with coordinates expressed as a proportion of the canvas |
+| Type mood | editorial, archival, technical, clinical, or tactile; it must match the selected theme |
+| Type palette | title, accent, and background colors sampled from the theme palette |
+| Artwork exclusion | which region the image generator must keep visually quiet and which objects must stay outside it |
+| Integration device | one native visual device only, such as a paper field, masthead, grid, drafting rule, printed caption line, or architectural facade |
+
+Use a title-first workflow whenever exact text is needed:
+
+1. Reserve the title zone in the image prompt as an intentional part of the scene, not a generic empty box.
+2. Generate the artwork without text. Keep the title zone clear of focal objects, strong texture, and high-contrast edges.
+3. Add exact Chinese title text in post-production using the specified type mood, palette, alignment, and integration device.
+4. Inspect the finished cover at full size and at thumbnail scale. If the title reads as a floating card or blocks the main mechanism, regenerate the background or revise the title zone; do not ship it.
+
 ### 2. Choose a theme
 
 Read `references/theme_registry.md`, then read only the selected theme reference. Use these defaults.
@@ -101,7 +155,11 @@ negative prompt. Keep the main title and any exact text short enough for the sel
 
 Use this policy for every theme:
 
-- Main title: default to text-free artwork plus a post-produced title. Request exact Chinese rendering only when the user explicitly accepts possible generation errors.
+- Main title: default to text-free artwork plus exact, post-produced typography. Never ask the image model to render long Chinese titles unless the user explicitly accepts possible generation errors.
+- Title-first composition: reserve one fixed title zone before generating the artwork. The artwork must fill the remaining canvas and actively frame the type. Do not default to a left-aligned translucent rectangle, generic dark overlay, or detachable information card.
+- Typography integration: use the theme's own typographic device (for example a journal masthead, Swiss grid, archive caption field, blueprint drafting rules, or engineering title strip). Match the title's weight, color, line breaks, spacing, alignment, and supporting marks to that device.
+- Exact title hierarchy: use at most three text levels: optional eyebrow, main title, optional subtitle. The main title normally uses 2–3 lines, the subtitle one line. Do not use long explanatory deck copy on the cover.
+- Post-production rule: put text directly on a quiet area, or on a native material surface such as paper, a clinical masthead, a blueprint field, or a built architectural plane. A panel is allowed only when that panel is intrinsic to the selected editorial system; it must never look like an app UI card.
 - Module title: keep short; request exact rendering only when it is important.
 - Small labels, captions, annotations, and chart labels: keep to roughly 4–6 Chinese characters where possible,
   or use English/Latin abbreviations. Do not put long Chinese prose into tiny generated text.
@@ -109,6 +167,7 @@ Use this policy for every theme:
   host's layout or image-editing capability. If that capability is unavailable, state that the image is a visual
   draft and provide the text separately.
 - Keep all important content inside the central 60% vertical safe area because hosts may crop or resize the image.
+- Keep the entire title block within the central 60% vertical safe area. Maintain at least 5% canvas width of breathing room from the nearest edge unless the selected theme explicitly uses a full-bleed masthead.
 - Target the WeChat cover ratio at approximately 2.35:1. Preferred output is `1260x540` or another size with a
   ratio near 2.33–2.35. If the host returns another ratio, provide crop or padding instructions based on the
   actual width and height, not on one hard-coded model size.
@@ -138,11 +197,19 @@ Before delivering the prompt, check:
 - a complete `Negative prompt:` or equivalent avoidance section is present;
 - the selected theme's palette and visual skeleton are represented;
 - exact text is separated from approximate/small text;
+- a title zone is explicitly defined before image generation, including its location, dimensions, and visual integration device;
+- the final exact text uses theme-specific typography rather than a generic overlay or UI-like card;
+- the title remains readable at thumbnail scale without obscuring the primary scientific object;
 - the crop-safe area is stated;
 - platform watermark limitations are not misrepresented;
 - the output path is truthful: image artifact, draft image, or prompt-only.
+- the mandatory Alignment Record is included in the working prompt package and passes every gate rule;
+- every focal/supporting element in the prompt appears in `Element provenance` with a valid source;
+- the selected theme's narrative matches the recorded content class;
+- a thumbnail-level visual review confirms that the core relationship still communicates the thesis.
 
-Use `scripts/validate_prompt.py` when the host can run Python. `scripts/validate-prompt.sh` remains a shell
+Use `scripts/validate_prompt.py --all` when the host can run Python. Include the Alignment Record in the
+input passed to the script; `--all` must fail if it is absent or structurally incomplete. `scripts/validate-prompt.sh` remains a shell
 compatibility wrapper. If no script runtime is available, perform the same checklist manually and say so.
 
 ## Output format

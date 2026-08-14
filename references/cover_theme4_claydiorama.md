@@ -52,7 +52,7 @@ description: >
 | `{step_1..7}` | 3-7 个可视化步骤，每项只描述动作与对象 |
 | `{payload}` | RNA、蛋白、药物或其他载荷 |
 | `{outcome}` | 最终表达、清除、修复或治疗结果 |
-| `{title_zone}` | left tabletop / top band / central quiet cytoplasm |
+| `{title_zone}` | fixed left tabletop field, 7%-43% canvas width and 23%-67% canvas height; keep it as untextured cream clay tabletop with only a thin hand-pressed clay rule |
 
 ## 4. Prompt 模板
 
@@ -61,7 +61,7 @@ Create a finished WeChat Official Account cover at 2.35:1 aspect ratio (prefer 1
 
 Build one continuous cutaway scene, not separate cards. Show {carrier} moving through a clay blood vessel or tissue channel, interacting with {target}, then progressing spatially through {step_1}, {step_2}, {step_3}, {step_4}, {step_5}, {step_6}, and {step_7}. Inside the cell, show {payload} as a distinct hand-shaped clay strand and end with {outcome}. Preserve scientifically coherent membranes, receptors, vesicles, organelles, and direction of travel.
 
-Everything must look physically hand-sculpted from matte polymer clay: visible fingerprints, slightly imperfect edges, tactile lipid bilayers, soft studio lighting, gentle contact shadows, macro tabletop photography, shallow but controlled depth of field. Use cream, terracotta, burgundy, teal, mustard yellow, and deep blue. Keep {title_zone} low-detail for accurate post-produced Chinese typography.
+Everything must look physically hand-sculpted from matte polymer clay: visible fingerprints, slightly imperfect edges, tactile lipid bilayers, soft studio lighting, gentle contact shadows, macro tabletop photography, shallow but controlled depth of field. Use cream, terracotta, burgundy, teal, mustard yellow, and deep blue. Reserve {title_zone} as a quiet cream tabletop plane bounded only by a thin hand-pressed deep-blue clay rule; do not place cells, particles, receptor clusters, shadows, or strong texture there. The artwork must visibly flow around and toward this title plane.
 
 No generated text. No labels, letters, numbers, logos, signatures, watermarks, or platform marks.
 
@@ -70,9 +70,12 @@ Negative prompt: round display pedestals, cute mascot faces, children's toy pack
 
 只有 3-5 步时删除多余步骤句，不得留下占位符。
 
-## 5. 文字与平台策略
+## 5. 标题构图与文字策略
 
-- 默认生成无字底图，并在浅色桌面、顶部带状区或细胞质低细节区后期叠加中文标题。
+- **固定标题区**：左侧桌面字段，`x=7%-43%`、`y=23%-67%`。不得用半透明色块覆盖图像；标题直接印在预留的奶油软陶桌面上。
+- **字形语气**：使用圆润但克制的无衬线粗体；深蓝主标题，陶土红小标题，像博物馆标本卡上的印刷信息，而非软件面板。
+- **融合装置**：一条轻微手压痕的深蓝细线与标题左缘对齐；只有该线和小色点可作为装饰，不能加入矩形卡片。
+- 默认生成无字底图，并在该标题字段后期叠加中文标题。
 - 不在模型内生成机制标签；若用户需要标签，单独输出文字清单给排版工具。
 - 重要结构放在中央 60% 垂直安全区，防止微信裁切。
 - 平台强制水印无法通过 negative prompt 消除；将带水印结果标为预览稿。
