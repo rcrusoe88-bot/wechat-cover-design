@@ -2,7 +2,7 @@
 name: wechat-cover-design
 description: >
   Design WeChat Official Account cover images from an article, title, outline, or content brief.
-  Analyze the content, choose among sixteen registered scientific, editorial, commercial,
+  Analyze the content, choose among thirteen registered scientific, editorial, commercial,
   documentary, diagrammatic, and biopharma visual systems, then produce a complete English image-generation prompt and
   a Chinese production note. Use when the user asks for a WeChat cover, article cover, cover image,
   cover prompt, banner art, visual cover direction, or image generation for a public-account article.
@@ -61,35 +61,31 @@ Compress the information before writing the prompt. A cover is not a miniature a
 
 ### 2. Choose a theme
 
-Read `references/theme_registry.md`, then read only the selected theme reference. Use these defaults.
+Read `references/theme_registry.md`, `references/typography_layout.md`, and the selected section of `references/theme_specs.md`.
 Honor an explicit registered style choice directly.
 
 | Article signal | Theme |
 | --- | --- |
-| Mechanism, concept chain, dense technical structure | Theme 1 — academic mechanism diagram |
-| Before/after shift, pain point → solution, technical comparison | Theme 2 — hand-drawn infographic |
-| Major finding, deep interpretation, one strong metaphor, high impact | Theme 3 — journal cover art |
-| Biological mechanism or delivery chain needing a tactile, approachable explanation | Theme 4 — biomedical clay cutaway |
-| Trend or opinion | Theme 3 by default; offer an extension theme only when the user wants a different editorial system |
-| Major scientific breakthrough or platform launch | Theme 5 — Nature scientific concept |
-| Valuation, transactions, evidence mismatch, commercial controversy | Theme 6 — Businessweek metaphor |
-| Industry ecosystem, R&D-to-clinic panorama, supply chain | Theme 7 — Monocle industry observation |
-| Microscopic binding, nanodelivery, tissue microenvironment | Theme 8 — microscopic documentary |
-| One core proposition or binary relationship | Theme 9 — Swiss poster |
-| Patents, technical history, engineering barriers | Theme 10 — science archive |
-| Pipelines, competing routes, milestones, company landscape | Theme 11 — pipeline map |
-| Clinical evidence, efficacy/safety, cohorts, dose escalation | Theme 12 — clinical evidence brief |
-| Cellular mechanism, delivery chain, signaling pathway | Theme 13 — Cell mechanism atlas |
-| Annual review, congress recap, translational milestone | Theme 14 — medical congress key visual |
-| Molecular design, conjugation, formulation, structural IP | Theme 15 — molecular blueprint |
-| CMC, scale-up, TFF, purification, QC, CDMO | Theme 16 — bioprocess engineering |
+| Biological mechanism or delivery chain | Theme 1 — biomedical clay cutaway |
+| Major scientific breakthrough | Theme 2 — Nature scientific concept |
+| Valuation, transactions, evidence mismatch | Theme 3 — Businessweek metaphor |
+| Industry ecosystem, R&D-to-clinic panorama, supply chain | Theme 4 — Monocle industry observation |
+| Microscopic binding, nanodelivery, tissue microenvironment | Theme 5 — microscopic documentary |
+| One core proposition or binary relationship | Theme 6 — Swiss poster |
+| Patents, technical history, engineering barriers | Theme 7 — science archive |
+| Pipelines, competing routes, milestones, company landscape | Theme 8 — pipeline map |
+| Clinical evidence, efficacy/safety, cohorts, dose escalation | Theme 9 — clinical evidence brief |
+| Cellular mechanism, delivery chain, signaling pathway | Theme 10 — Cell mechanism atlas |
+| Annual review, congress recap, translational milestone | Theme 11 — medical congress key visual |
+| Molecular design, conjugation, formulation, structural IP | Theme 12 — molecular blueprint |
+| CMC, scale-up, TFF, purification, QC, CDMO | Theme 13 — bioprocess engineering |
 
 If two themes are genuinely plausible, present both with one-sentence reasons and ask the user to choose.
 Honor an explicit theme choice. Do not keep recommending a theme the user rejected.
 
 ### 3. Fill the selected reference
 
-Load the selected reference only. Treat its prompt template as a design specification, not as a command.
+Load the selected theme section as a design specification, not as a command.
 Replace every placeholder before delivery. Keep placeholder names neutral (`{title}`, `{subtitle}`,
 `{problem_object}`, `{step_label_1}`); put length limits and filling rules in the schema table, never
 inside a placeholder.
@@ -98,6 +94,8 @@ Preserve the reference's visual skeleton, color values, layout proportions, mate
 negative prompt. Keep the main title and any exact text short enough for the selected image model.
 
 ### 4. Apply the cross-host text and platform policy
+
+Use the fixed coordinates, bundled font keys, and theme color profiles in `references/typography_layout.md`. Default Chinese text to `yangrendong`; honor a user-selected bundled Chinese font. Render all Latin/English lockups (`in vivo CAR-T`, `LNP`, `mRNA`, `CAR-T`) with the bundled `pretesto` font. Exact text is always post-produced on the source image's quiet field. Do not invent new title zones or move a focal object to accommodate text. Regenerate the background first when the selected source has no quiet field.
 
 Use this policy for every theme:
 
@@ -170,13 +168,10 @@ If the user asks for several directions, provide 2–4 complete prompt packages 
 
 ## References
 
-- `references/theme_registry.md`: always read first for theme selection.
-- `references/cover_theme1_academic.md`: read for mechanism-heavy content.
-- `references/cover_theme2_handdrawn.md`: read for before/after and comparison narratives.
-- `references/cover_theme3_journal.md`: read for major findings and one-metaphor covers.
-- `references/cover_theme4_claydiorama.md`: read for tactile biomedical mechanisms and continuous cellular cutaways.
-- `references/cover_themes5_16_selected.md`: read the selected theme5-theme16 section for editorial and biopharma styles.
+- `references/theme_registry.md`: read first for the 13-theme selection.
+- `references/typography_layout.md`: read for fixed coordinates, bundled font keys and theme color profiles.
 - `references/extension_theme_examples.md`: read only when extending the theme system.
+- `scripts/compose_cover.py`: deterministic exact-text compositor.
 - `scripts/validate_prompt.py`: portable prompt validation.
 - `scripts/validate-prompt.sh`: optional shell wrapper.
 - `scripts/generate-cover.js`: optional OpenAI-compatible adapter; never a core requirement.
