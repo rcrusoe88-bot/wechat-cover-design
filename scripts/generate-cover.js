@@ -45,7 +45,8 @@ const baseUrl = args['base-url'] || process.env.OPENAI_BASE_URL || config.base_u
 const apiKey  = args['api-key']  || process.env.OPENAI_API_KEY  || config.api_key  || '';
 const model   = args['model']    || process.env.COVER_IMAGE_MODEL || config.model || 'dall-e-3';
 const size    = args['size']     || config.default_size || '1792x1024';
-const prompt  = args['prompt']   || '';
+let prompt  = args['prompt']   || '';
+const briefPath = args['brief'] || '';
 const theme   = args['theme']    || 'custom';
 const name    = args['name']     || '';
 const outDir  = args['out']      || config.output_dir || path.join(process.cwd(), 'assets', 'covers');
@@ -53,6 +54,24 @@ const quiet   = !!args['quiet'];
 const crop    = !!args['crop'];
 
 function log(msg) { if (!quiet) console.log(msg); }
+
+if (!briefPath) {
+  console.error('A validated final --brief JSON file is required. Prompt-only delivery does not use this adapter.');
+  process.exit(1);
+}
+
+let brief;
+try {
+  brief = JSON.parse(fs.readFileSync(briefPath, 'utf8'));
+} catch (err) {
+  console.error('Could not read --brief JSON: ' + err.message);
+  process.exit(1);
+}
+if (brief.input_quality !== 'final' || !brief.image_prompt || !brief.theme || !brief.title) {
+  console.error('The brief is not final or is missing image_prompt, theme, or title data. Run validate_brief.py first.');
+  process.exit(1);
+}
+prompt = brief.image_prompt;
 
 // ---------- 前置校验 ----------
 if (!prompt) {
@@ -149,7 +168,7 @@ async function main() {
   fs.writeFileSync(pngPath, buffer);
 
   const memoPath = path.join(outDir, `cover-${baseName}.prompt.txt`);
-  fs.writeFileSync(memoPath, `# cover prompt (wechat-cover-design)\nmodel: ${model}\nsize: ${size}\n\n${prompt}\n`);
+  fs.writeFileSync(memoPath, `# cover prompt (wechat-cover-design)\nmodel: ${model}\nsize: ${size}\ntheme: ${brief.theme.id || theme}\n\n${prompt}\n\n# title overlay (post-production)\nmain title: ${brief.title.exact_text}\nsubtitle: ${brief.title.subtitle || 'None'}\nzone: ${brief.title.zone}\ntype mood: ${brief.title.type_mood}\ntype palette: ${brief.title.type_palette}\nintegration device: ${brief.title.integration_device}\n`);
 
   log(`✅ 已保存: ${pngPath}`);
   log(`📝 备忘: ${memoPath}`);

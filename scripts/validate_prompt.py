@@ -46,6 +46,37 @@ def check_text_strategy(text: str) -> tuple[bool, str]:
     return ok, "contains a text-rendering strategy" if ok else "missing a text-rendering strategy"
 
 
+def check_content_alignment(text: str) -> tuple[bool, str]:
+    """Require a minimal, inspectable record tying the prompt to the article."""
+    required_fields = [
+        "Article thesis",
+        "Reader takeaway",
+        "Content class",
+        "Theme rationale",
+        "Visual metaphor",
+        "Element provenance",
+        "Forbidden substitutions",
+    ]
+    missing = [field for field in required_fields if not re.search(rf"(?im)^\s*{re.escape(field)}\s*:", text)]
+    if missing:
+        return False, "missing Alignment Record fields: " + ", ".join(missing)
+
+    provenance_match = re.search(
+        r"(?ims)^\s*Element provenance\s*:\s*(.+?)(?=^\s*(?:Forbidden substitutions|English image prompt|Negative prompt)\s*:|\Z)",
+        text,
+    )
+    if not provenance_match or len(provenance_match.group(1).strip()) < 25:
+        return False, "Element provenance is empty or too vague"
+
+    forbidden_match = re.search(
+        r"(?ims)^\s*Forbidden substitutions\s*:\s*(.+?)(?=^\s*(?:English image prompt|Negative prompt)\s*:|\Z)",
+        text,
+    )
+    if not forbidden_match or len(forbidden_match.group(1).strip()) < 10:
+        return False, "Forbidden substitutions is empty or too vague"
+    return True, "contains a complete Alignment Record"
+
+
 def run(text: str, args: argparse.Namespace) -> int:
     checks = []
     if args.all or args.no_placeholders:
@@ -58,6 +89,8 @@ def run(text: str, args: argparse.Namespace) -> int:
         checks.append(check_length)
     if args.all or args.text_strategy:
         checks.append(check_text_strategy)
+    if args.all or args.content_alignment:
+        checks.append(check_content_alignment)
 
     failed = False
     for check in checks:
@@ -78,6 +111,7 @@ def main() -> int:
     group.add_argument("--has-ratio", dest="has_ratio", action="store_true")
     group.add_argument("--length", action="store_true")
     group.add_argument("--text-strategy", dest="text_strategy", action="store_true")
+    group.add_argument("--content-alignment", dest="content_alignment", action="store_true")
     args = parser.parse_args()
     return run(sys.stdin.read(), args)
 

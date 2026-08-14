@@ -1,0 +1,13 @@
+{
+  "input_quality": "provisional",
+  "article_thesis": "The title mentions AI but does not state the article's actual argument or evidence.",
+  "reader_takeaway": "The reader takeaway is unknown until the author provides more context.",
+  "content_class": "opinion",
+  "theme": {"id": "theme3", "rationale": "This is only a temporary guess from a title.", "compatibility": "compatible"},
+  "visual_metaphor": {"relationship": "An unspecified relationship is not ready for an image.", "thesis_explanation": "The thesis needs clarification before final production."},
+  "elements": [{"id": "unknown_subject", "role": "focal", "description": "A provisional placeholder object.", "source": "The title alone; needs confirmation."}],
+  "forbidden_substitutions": ["generic AI brain"],
+  "title": {"exact_text": "AI", "subtitle": "", "zone": "left third", "type_mood": "editorial", "type_palette": "black", "integration_device": "paper field"},
+  "prompt_elements": [{"element_id": "unknown_subject", "prompt_description": "A placeholder object waiting for confirmation."}],
+  "image_prompt": "A 1260x540 provisional text-free cover with a left title zone. Negative prompt: readable text, watermark, generic illustration."
+}
