@@ -56,6 +56,13 @@ description: >
 
 ## 全部主题规格文件
 
+## Additional selection rule
+
+For a personal showcase, creator method, or portfolio article, use `theme9` as the default starting
+point. Treat professional domain terms as supporting context only. Select a mechanism, pipeline,
+Businessweek, or bioprocess theme only when the article itself is primarily about that mechanism,
+commercial claim, or process.
+
 | 文件 | 内容 |
 |------|------|
 | references/_theme_template.md | 新增主题的标准脚手架模板（复制改名后填写） |

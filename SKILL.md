@@ -42,6 +42,18 @@ separate title-summary skill is available and explicitly selected.
 
 ## Workflow
 
+### 0. Check input sufficiency
+
+Classify the supplied input before selecting a theme:
+
+| Input state | Required action |
+| --- | --- |
+| Sufficient | The article or brief states a thesis, reader takeaway, and enough concrete details to source the focal elements. Set `input_quality` to `final`. |
+| Insufficient | A title, a topic label, or a thin outline does not establish the article claim. Ask up to three focused questions. If the user proceeds without answering, set `input_quality` to `provisional`, deliver a clearly marked prompt-only draft, and do not generate a final image. |
+
+Never invent missing thesis, evidence, or domain details to make a title-only request look complete. A
+provisional prompt must state its assumptions and the details that need confirmation before publication.
+
 ### 1. Extract the visual brief
 
 Read the supplied article or brief and record:
@@ -93,7 +105,21 @@ Apply these non-negotiable rules:
 For a personal showcase, prioritize the person's point of view, body of work, working method, and
 brand language. Do not let domain props become the story unless they are central to the article.
 
-### 1.3 Lock the title composition before generating artwork
+### 1.3 Create the structured cover brief (mandatory for final output)
+
+Create a UTF-8 JSON working file following `references/cover_brief.schema.json`. It is the source of
+truth for the final prompt and contains the thesis, theme decision, visual metaphor, element sources,
+forbidden substitutions, title plan, prompt-element mapping, and final English image prompt.
+
+For every `elements[]` entry, use `role: focal` or `supporting`, cite the thesis, takeaway, or a
+concrete article detail in `source`, and add a matching `prompt_elements[]` entry. Do not add
+undeclared visual objects to the final prompt.
+
+Run `scripts/validate_brief.py <brief.json>` before image generation. A failing final brief must return
+to extraction. A provisional brief may be delivered as prompt-only after its assumptions are made clear,
+but it must not be passed to an image adapter.
+
+### 1.4 Lock the title composition before generating artwork
 
 When a cover needs an exact title, treat typography as a first-class visual object, not a label applied after the artwork is complete. Before drafting the image prompt, record:
 
@@ -116,7 +142,6 @@ Use a title-first workflow whenever exact text is needed:
 ### 2. Choose a theme
 
 Read `references/theme_registry.md`, then read only the selected theme reference. Use these defaults.
-Honor an explicit registered style choice directly.
 
 | Article signal | Theme |
 | --- | --- |
@@ -125,6 +150,7 @@ Honor an explicit registered style choice directly.
 | Major finding, deep interpretation, one strong metaphor, high impact | Theme 3 — journal cover art |
 | Biological mechanism or delivery chain needing a tactile, approachable explanation | Theme 4 — biomedical clay cutaway |
 | Trend or opinion | Theme 3 by default; offer an extension theme only when the user wants a different editorial system |
+| Personal showcase, creator method, portfolio | Theme 9 by default; use the person's working method and brand language rather than generic domain props |
 | Major scientific breakthrough or platform launch | Theme 5 — Nature scientific concept |
 | Valuation, transactions, evidence mismatch, commercial controversy | Theme 6 — Businessweek metaphor |
 | Industry ecosystem, R&D-to-clinic panorama, supply chain | Theme 7 — Monocle industry observation |
@@ -138,8 +164,14 @@ Honor an explicit registered style choice directly.
 | Molecular design, conjugation, formulation, structural IP | Theme 15 — molecular blueprint |
 | CMC, scale-up, TFF, purification, QC, CDMO | Theme 16 — bioprocess engineering |
 
+Apply this priority order: article thesis and content class, then factual/domain constraints, then user
+style preference. If the user requests a registered theme that conflicts with the article, explain the
+conflict and offer either a thesis-faithful reinterpretation of that visual language or an explicit
+`user_override` recorded in the structured brief. Do not silently reinterpret a personal showcase as a
+commercial controversy, a technical mechanism, or an industrial process merely because it contains
+those keywords.
+
 If two themes are genuinely plausible, present both with one-sentence reasons and ask the user to choose.
-Honor an explicit theme choice. Do not keep recommending a theme the user rejected.
 
 ### 3. Fill the selected reference
 
@@ -150,6 +182,15 @@ inside a placeholder.
 
 Preserve the reference's visual skeleton, color values, layout proportions, material language, and
 negative prompt. Keep the main title and any exact text short enough for the selected image model.
+
+### 3.1 Resolve instruction conflicts
+
+The global text policy and the structured brief override every older theme-template instruction. For all
+themes, generate a text-free background: no generated title, subtitle, source citation, node label,
+number, brand name, or small annotation. Preserve the theme's title zone and native integration device,
+then deliver the exact main title and subtitle in the separate `Title overlay` block. If a selected
+reference asks the image model to render text, treat that request as obsolete and remove it from the
+final image prompt.
 
 ### 4. Apply the cross-host text and platform policy
 
@@ -183,10 +224,14 @@ Choose the first available path:
 2. A host-supported image API or connector, if the host exposes one.
 3. A bundled adapter such as `scripts/generate-cover.js`, only when the host can run it and the user has supplied
    the required credentials and provider settings.
-4. Prompt-only delivery.
+4. Prompt-only delivery for copying into a third-party image tool.
 
 Do not invent a tool name or claim that an image was generated when the host did not return an image artifact.
-Record the actual path in the production note: `native`, `adapter`, or `prompt-only`.
+For `prompt-only`, provide the complete English prompt, target dimensions, crop-safe guidance, negative
+prompt, and a separate `Title overlay` block containing the exact main title, subtitle, title-zone
+coordinates, type mood, type palette, alignment, and integration device. The image prompt must reserve
+that zone as empty artwork; the title overlay is for post-production after the user generates the image
+in a third-party tool. Record the actual path in the production note: `native`, `adapter`, or `prompt-only`.
 
 ### 6. Validate and deliver
 
@@ -208,11 +253,26 @@ Before delivering the prompt, check:
 - the selected theme's narrative matches the recorded content class;
 - a thumbnail-level visual review confirms that the core relationship still communicates the thesis.
 
-Use `scripts/validate_prompt.py --all` when the host can run Python. Include the Alignment Record in the
-input passed to the script; `--all` must fail if it is absent or structurally incomplete. `scripts/validate-prompt.sh` remains a shell
+For a final brief, use both `scripts/validate_brief.py <brief.json>` and
+`scripts/validate_prompt.py --all`. Include the Alignment Record in the text passed to the prompt
+validator; both commands must pass before image generation. `scripts/validate-prompt.sh` remains a shell
 compatibility wrapper. If no script runtime is available, perform the same checklist manually and say so.
 
 ## Output format
+
+For `prompt-only`, add this block after the English prompt. It is mandatory even when the subtitle is
+empty; write `None` rather than omitting it.
+
+```text
+Title overlay (post-production, not for image generation):
+Main title: "{exact main title}"
+Subtitle: "{exact subtitle or None}"
+Zone: {x/y/width/height as canvas proportions}
+Alignment: {left/center/right}
+Type mood: {theme-specific description}
+Type palette: {title and accent colors}
+Integration device: {paper field/masthead/grid/etc.}
+```
 
 ```text
 【封面方案】
@@ -244,6 +304,8 @@ If the user asks for several directions, provide 2–4 complete prompt packages 
 - `references/cover_theme4_claydiorama.md`: read for tactile biomedical mechanisms and continuous cellular cutaways.
 - `references/cover_themes5_16_selected.md`: read the selected theme5-theme16 section for editorial and biopharma styles.
 - `references/extension_theme_examples.md`: read only when extending the theme system.
+- `references/cover_brief.schema.json`: structured source-of-truth format for final prompt packages.
+- `scripts/validate_brief.py`: validates input sufficiency, sourced elements, title plan, and prompt mapping.
 - `scripts/validate_prompt.py`: portable prompt validation.
 - `scripts/validate-prompt.sh`: optional shell wrapper.
 - `scripts/generate-cover.js`: optional OpenAI-compatible adapter; never a core requirement.

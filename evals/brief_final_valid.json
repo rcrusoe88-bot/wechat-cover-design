@@ -1,0 +1,49 @@
+{
+  "input_quality": "final",
+  "article_thesis": "A biopharmaceutical CMC process developer introduces a personal method for applying engineering rigor to practical AI tools and creative work.",
+  "reader_takeaway": "Engineering discipline can make AI work more useful and repeatable.",
+  "content_class": "personal_showcase",
+  "theme": {
+    "id": "theme9",
+    "rationale": "A Swiss editorial system foregrounds the creator's method and point of view without turning CMC terminology into unrelated industrial props.",
+    "compatibility": "compatible"
+  },
+  "visual_metaphor": {
+    "relationship": "A disciplined modular grid meets a small field of flexible orange creative marks, held in deliberate balance.",
+    "thesis_explanation": "The relationship shows engineering structure making creative AI work controllable rather than depicting a literal factory process."
+  },
+  "elements": [
+    {
+      "id": "method_grid",
+      "role": "focal",
+      "description": "A strict black modular grid with a single measured orange interruption.",
+      "source": "Article thesis: engineering rigor applied to practical AI creation."
+    },
+    {
+      "id": "skill_marks",
+      "role": "supporting",
+      "description": "Three compact orange editorial marks arranged as working modules.",
+      "source": "Reader takeaway: useful, repeatable AI tools and creative work."
+    }
+  ],
+  "forbidden_substitutions": ["factory valve", "bioreactor", "stock chart", "handshake"],
+  "title": {
+    "exact_text": "一个喜欢 AI 的\n生物制药 CMC 工艺开发者",
+    "subtitle": "把专业领域的严谨，带进 AI 工具",
+    "zone": "left x=7%-47%, y=18%-74%",
+    "type_mood": "Swiss editorial, ultra-bold black sans serif",
+    "type_palette": "black #111111, signal red #F01816",
+    "integration_device": "paper-white grid field with one signal-red rule"
+  },
+  "prompt_elements": [
+    {
+      "element_id": "method_grid",
+      "prompt_description": "A strict modular black grid, cropped with deliberate asymmetry."
+    },
+    {
+      "element_id": "skill_marks",
+      "prompt_description": "Three orange editorial marks aligned to the grid without entering the title zone."
+    }
+  ],
+  "image_prompt": "A text-free WeChat Official Account cover at 1260x540, Swiss editorial poster style. Use paper white #F4F2EB, pure black #111111, cobalt blue #1749C6, and signal red #F01816. Reserve the left x=7%-47%, y=18%-74% as an empty, low-detail paper-white modular grid field for post-production typography. On the right, show a strict modular black grid with a single measured orange interruption and three compact orange editorial marks aligned to the grid. The composition expresses engineering rigor becoming practical creative AI work. No generated text, letters, labels, numbers, logos, watermark, UI cards, or unrelated domain props. Negative prompt: readable text, fake typography, gibberish, crowded composition, generic stock illustration, medical misinformation."
+}
