@@ -1,49 +1,53 @@
 {
   "input_quality": "final",
-  "article_thesis": "A biopharmaceutical CMC process developer introduces a personal method for applying engineering rigor to practical AI tools and creative work.",
-  "reader_takeaway": "Engineering discipline can make AI work more useful and repeatable.",
-  "content_class": "personal_showcase",
+  "article_thesis": "Antibody-conjugated lipid nanoparticles can direct in vivo CAR-T payload delivery toward defined immune-cell populations, making targeting evidence central to translation.",
+  "reader_takeaway": "Targeting changes where an in vivo CAR-T payload reaches and how its clinical evidence should be judged.",
+  "content_class": "evidence",
   "theme": {
     "id": "theme9",
-    "rationale": "A Swiss editorial system foregrounds the creator's method and point of view without turning CMC terminology into unrelated industrial props.",
+    "rationale": "The clinical-evidence bluebook system emphasizes the relationship between targeted delivery, cohort evidence, and translational confidence without overstating efficacy.",
     "compatibility": "compatible"
   },
   "visual_metaphor": {
-    "relationship": "A disciplined modular grid meets a small field of flexible orange creative marks, held in deliberate balance.",
-    "thesis_explanation": "The relationship shows engineering structure making creative AI work controllable rather than depicting a literal factory process."
+    "relationship": "A protected antibody-decorated nanoparticle moves toward a defined immune-cell context while sparse evidence trajectories remain secondary to the delivery mechanism.",
+    "thesis_explanation": "The scene makes targeting and evidence legible as connected but distinct parts of the translational claim."
   },
   "elements": [
     {
-      "id": "method_grid",
+      "id": "targeted_lnp",
       "role": "focal",
-      "description": "A strict black modular grid with a single measured orange interruption.",
-      "source": "Article thesis: engineering rigor applied to practical AI creation."
+      "description": "A translucent lipid nanoparticle with restrained antibody ligands and an internal RNA payload.",
+      "source": "Article thesis: antibody-conjugated LNP directs the in vivo delivery payload."
     },
     {
-      "id": "skill_marks",
+      "id": "evidence_trajectory",
       "role": "supporting",
-      "description": "Three compact orange editorial marks arranged as working modules.",
-      "source": "Reader takeaway: useful, repeatable AI tools and creative work."
+      "description": "Sparse clinical evidence trajectories and cohort points, without numeric claims or dashboard panels.",
+      "source": "Reader takeaway: translation requires judging targeting evidence rather than assuming efficacy."
     }
   ],
-  "forbidden_substitutions": ["factory valve", "bioreactor", "stock chart", "handshake"],
+  "forbidden_substitutions": [
+    "vaccine syringe cliche",
+    "pharma stock ticker",
+    "lab-coat hero shot"
+  ],
   "title": {
-    "exact_text": "一个喜欢 AI 的\n生物制药 CMC 工艺开发者",
-    "subtitle": "把专业领域的严谨，带进 AI 工具",
-    "zone": "left x=7%-47%, y=18%-74%",
-    "type_mood": "Swiss editorial, ultra-bold black sans serif",
-    "type_palette": "black #111111, signal red #F01816",
-    "integration_device": "paper-white grid field with one signal-red rule"
+    "exact_text": "in vivo CAR-T",
+    "subtitle": "抗体偶联 LNP 技术路径",
+    "zone": "left x=4.8%-39.1%, y=13.1%-87.1%",
+    "type_mood": "clinical editorial with restrained scientific precision",
+    "type_palette": "navy #12375C, safety orange #FF6B21",
+    "integration_device": "low-detail clinical-white paper field integrated into the evidence composition"
   },
   "prompt_elements": [
     {
-      "element_id": "method_grid",
-      "prompt_description": "A strict modular black grid, cropped with deliberate asymmetry."
+      "element_id": "targeted_lnp",
+      "prompt_description": "Place the translucent antibody-decorated LNP on the right side of the canvas, outside the title field."
     },
     {
-      "element_id": "skill_marks",
-      "prompt_description": "Three orange editorial marks aligned to the grid without entering the title zone."
+      "element_id": "evidence_trajectory",
+      "prompt_description": "Use sparse pale clinical trajectories and cohort points behind the focal particle, with no numbers or dashboard cards."
     }
   ],
-  "image_prompt": "A text-free WeChat Official Account cover at 1260x540, Swiss editorial poster style. Use paper white #F4F2EB, pure black #111111, cobalt blue #1749C6, and signal red #F01816. Reserve the left x=7%-47%, y=18%-74% as an empty, low-detail paper-white modular grid field for post-production typography. On the right, show a strict modular black grid with a single measured orange interruption and three compact orange editorial marks aligned to the grid. The composition expresses engineering rigor becoming practical creative AI work. No generated text, letters, labels, numbers, logos, watermark, UI cards, or unrelated domain props. Negative prompt: readable text, fake typography, gibberish, crowded composition, generic stock illustration, medical misinformation."
+  "image_prompt": "Cover plan:\nTheme: Theme 9 - clinical evidence bluebook\nGeneration path: native-image\n\nAlignment Record:\nArticle thesis: Antibody-conjugated lipid nanoparticles can direct in vivo CAR-T payload delivery toward defined immune-cell populations, making targeting evidence central to translation.\nReader takeaway: Targeting changes where an in vivo CAR-T payload reaches and how its clinical evidence should be judged.\nContent class: evidence\nTheme rationale: A clinical-evidence bluebook makes delivery and translational evidence visible without overstating efficacy.\nVisual metaphor: A protected targeted nanoparticle approaches an immune-cell context while sparse evidence trajectories remain secondary.\nElement provenance: targeted LNP from the article thesis; evidence trajectories from the reader takeaway about translational judgment.\nForbidden substitutions: vaccine syringe cliche, pharma stock ticker, lab-coat hero shot\n\nEnglish image prompt:\nCreate a text-free 1584x672 (2.35:1) WeChat cover in a premium clinical-evidence editorial style. Reserve left x=4.8%-39.1%, y=13.1%-87.1% as a clinical-white, low-detail title field. Keep the right 60% for a translucent antibody-decorated lipid nanoparticle with a visible RNA payload, restrained immune-cell context, pale cohort trajectories, and a small safety-orange evidence accent. Use clinical white, navy, cool cyan, graphite, and safety orange. The title field must remain free of focal objects, labels, numbers, and high-contrast edges. Text-rendering strategy: generate text-free artwork, then overlay exact Chinese typography in post-production using Yang Rendong Zhushi Light and PreTesto for Latin text.\nNegative prompt: watermark, logo, readable text, gibberish, fake clinical numbers, dashboard cards, crowded composition, vaccine syringe cliche, pharma stock ticker, lab-coat hero shot."
 }

@@ -39,11 +39,22 @@ def check_length(text: str) -> tuple[bool, str]:
 def check_text_strategy(text: str) -> tuple[bool, str]:
     patterns = [
         r"exact(?:ly)?\s+(?:render|display|text)",
+        r"(?:render|display)\b.{0,50}\bexact(?:ly)?\b",
         r"small\s+(?:labels?|text|captions?)",
         r"post[- ]?process|overlay|quiet zone|quiet area|后期|小字",
     ]
     ok = any(re.search(pattern, text, re.I) for pattern in patterns)
     return ok, "contains a text-rendering strategy" if ok else "missing a text-rendering strategy"
+
+
+def check_prompt_only_title(text: str) -> tuple[bool, str]:
+    left_field = re.search(r"left(?:-side)?\s+(?:title|text|type)\s+(?:field|zone|area|block)", text, re.I)
+    verbatim_title = re.search(r"(?:render|display|title)\s+.{0,50}(?:exact|verbatim)", text, re.I)
+    subtitle = re.search(r"\bsubtitle\b", text, re.I)
+    labels = re.search(r"\bsmall\s+labels?\b", text, re.I)
+    if left_field and verbatim_title and subtitle and labels:
+        return True, "contains an explicit left title field plus title, subtitle, and small-label instructions"
+    return False, "prompt-only delivery needs an explicit left title field plus title, subtitle, and small-label instructions"
 
 
 def check_content_alignment(text: str) -> tuple[bool, str]:
@@ -91,6 +102,18 @@ def run(text: str, args: argparse.Namespace) -> int:
         checks.append(check_text_strategy)
     if args.all or args.content_alignment:
         checks.append(check_content_alignment)
+    if args.prompt_only:
+        checks.extend(
+            [
+                check_no_placeholders,
+                check_negative,
+                check_ratio,
+                check_length,
+                check_text_strategy,
+                check_content_alignment,
+                check_prompt_only_title,
+            ]
+        )
 
     failed = False
     for check in checks:
@@ -112,6 +135,7 @@ def main() -> int:
     group.add_argument("--length", action="store_true")
     group.add_argument("--text-strategy", dest="text_strategy", action="store_true")
     group.add_argument("--content-alignment", dest="content_alignment", action="store_true")
+    group.add_argument("--prompt-only", dest="prompt_only", action="store_true")
     args = parser.parse_args()
     return run(sys.stdin.read(), args)
 

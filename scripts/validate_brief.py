@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -50,7 +51,8 @@ def validate(data: object) -> list[str]:
     if not isinstance(theme, dict):
         fail(errors, "theme must be an object")
     else:
-        if theme.get("id") not in {f"theme{i}" for i in range(1, 17)}:
+        # Theme IDs are defined by the current 13-theme registry.
+        if theme.get("id") not in {f"theme{i}" for i in range(1, 14)}:
             fail(errors, "theme.id is not registered")
         if not isinstance(theme.get("rationale"), str) or len(theme["rationale"].strip()) < 20:
             fail(errors, "theme.rationale must explain the thesis-to-theme fit")
@@ -110,11 +112,15 @@ def validate(data: object) -> list[str]:
     if not isinstance(title, dict) or not all(isinstance(title.get(k), str) and len(title[k].strip()) >= 1 for k in title_fields if k != "subtitle"):
         fail(errors, "title must contain exact_text, subtitle, zone, type_mood, type_palette, and integration_device")
 
-    prompt = data.get("image_prompt", "").casefold()
+    prompt = data.get("image_prompt", "")
+    prompt_body = prompt.split("Negative prompt:", 1)[0]
+    # The Alignment Record documents forbidden substitutions for reviewers. It is not an
+    # instruction to render them, so exclude that metadata line from artwork checks.
+    prompt_body = re.sub(r"(?im)^\s*Forbidden substitutions\s*:\s*.*$", "", prompt_body).casefold()
     if isinstance(forbidden, list):
-        matched = [item for item in forbidden if isinstance(item, str) and item.casefold() in prompt]
+        matched = [item for item in forbidden if isinstance(item, str) and item.casefold() in prompt_body]
         if matched:
-            fail(errors, "image_prompt contains forbidden substitutions: " + ", ".join(matched))
+            fail(errors, "image_prompt body contains forbidden substitutions: " + ", ".join(matched))
     return errors
 
 

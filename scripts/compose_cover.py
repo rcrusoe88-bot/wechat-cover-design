@@ -1,12 +1,14 @@
-"""Deterministically compose cover text with separate Chinese and Latin fonts."""
+"""Compose deterministic bilingual cover typography on a 2.35:1 background."""
 from __future__ import annotations
 
 import argparse
+import re
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
 
+BASE_CANVAS = (1584, 672)
 THEMES = {
     1: {"label": "主题 1 · 生物医学黏土封面", "main": "#57392D", "accent": "#964A3C", "sub": "#57392D", "footer": "#57392D"},
     2: {"label": "主题 2 · Nature 科学意象", "main": "#EDF8FA", "accent": "#FF7E73", "sub": "#EDF8FA", "footer": "#BFEFF5"},
@@ -23,66 +25,82 @@ THEMES = {
     13: {"label": "主题 13 · 生物工艺工程", "main": "#164B68", "accent": "#B37A28", "sub": "#164B68", "footer": "#164B68"},
 }
 
+LATIN_RUN = re.compile(r"[A-Za-z0-9+./-]+|\s+")
+
 
 def parse_color(value: str) -> tuple[int, int, int]:
     value = value.lstrip("#")
     return tuple(int(value[i : i + 2], 16) for i in (0, 2, 4))
 
 
-def font(path: Path, size: int) -> ImageFont.FreeTypeFont:
-    return ImageFont.truetype(str(path), size)
+def load_font(path: Path, base_size: int, scale: float) -> ImageFont.FreeTypeFont:
+    return ImageFont.truetype(str(path), max(8, round(base_size * scale)))
 
 
-def draw_segments(draw: ImageDraw.ImageDraw, x: int, y: int, segments: list[tuple[str, ImageFont.FreeTypeFont]], fill: tuple[int, int, int]) -> None:
-    """Draw mixed-script text left-to-right without relying on font fallback."""
-    cursor = x
-    for text, face in segments:
-        draw.text((cursor, y), text, font=face, fill=fill)
-        cursor += int(draw.textlength(text, font=face))
+def draw_bilingual(
+    draw: ImageDraw.ImageDraw,
+    position: tuple[int, int],
+    text: str,
+    chinese_font: ImageFont.FreeTypeFont,
+    latin_font: ImageFont.FreeTypeFont,
+    fill: tuple[int, int, int],
+) -> None:
+    """Draw Chinese and Latin runs with explicit fonts instead of fallback glyphs."""
+    cursor = position[0]
+    for run in re.findall(r"[A-Za-z0-9+./-]+|\s+|[^A-Za-z0-9+./\-\s]+", text):
+        face = latin_font if LATIN_RUN.fullmatch(run) else chinese_font
+        draw.text((cursor, position[1]), run, font=face, fill=fill)
+        cursor += round(draw.textlength(run, font=face))
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--theme", required=True, type=int, choices=range(1, 14))
     parser.add_argument("--font", default="assets/fonts/YangRendongZhushi-Light.ttf", help="Chinese font")
     parser.add_argument("--latin-font", default="assets/fonts/PreTesto_it.ttf", help="Latin/English font")
+    parser.add_argument("--eyebrow", help="Optional eyebrow; defaults to the theme label")
+    parser.add_argument("--title", default="in vivo CAR-T", help="Exact main title")
+    parser.add_argument("--subtitle-line1", default="抗体偶联 LNP", help="First subtitle line; use an empty string to omit")
+    parser.add_argument("--subtitle-line2", default="技术路径深度研究", help="Second subtitle line; use an empty string to omit")
+    parser.add_argument("--footer", default="抗体精准定位  ·  mRNA  ·  体内生成 CAR-T", help="Short footer; use an empty string to omit")
     args = parser.parse_args()
 
     image = Image.open(args.input).convert("RGB")
-    draw = ImageDraw.Draw(image)
-    profile = THEMES[args.theme]
+    width, height = image.size
+    scale_x = width / BASE_CANVAS[0]
+    scale_y = height / BASE_CANVAS[1]
+    scale_font = min(scale_x, scale_y)
+    if not 2.25 <= width / height <= 2.45:
+        raise ValueError(f"expected a roughly 2.35:1 input image, got {width}x{height}")
+
     root = Path(__file__).resolve().parents[1]
-    zh_path = Path(args.font)
+    chinese_path = Path(args.font)
     latin_path = Path(args.latin_font)
-    if not zh_path.is_absolute():
-        zh_path = root / zh_path
+    if not chinese_path.is_absolute():
+        chinese_path = root / chinese_path
     if not latin_path.is_absolute():
         latin_path = root / latin_path
 
-    zh_small, zh_main, zh_sub, zh_footer = (font(zh_path, n) for n in (25, 72, 41, 20))
-    latin_main, latin_sub, latin_footer = (font(latin_path, n) for n in (72, 41, 20))
-    x = 76
-    draw.text((x, 96), profile["label"], font=zh_small, fill=parse_color(profile["accent"]))
-    draw.text((x, 152), "in vivo CAR-T", font=latin_main, fill=parse_color(profile["main"]))
+    draw = ImageDraw.Draw(image)
+    profile = THEMES[args.theme]
+    zh_small, zh_main, zh_sub, zh_footer = (load_font(chinese_path, size, scale_font) for size in (25, 72, 41, 20))
+    latin_small, latin_main, latin_sub, latin_footer = (load_font(latin_path, size, scale_font) for size in (25, 72, 41, 20))
+    x = round(76 * scale_x)
+    y = lambda base: round(base * scale_y)
 
-    # Keep the two-line subtitle field fixed while rendering the acronym in PreTesto.
-    first = "抗体偶联 "
-    draw.text((x, 246), first, font=zh_sub, fill=parse_color(profile["sub"]))
-    draw.text((x + int(draw.textlength(first, font=zh_sub)), 246), "LNP", font=latin_sub, fill=parse_color(profile["sub"]))
-    draw.text((x, 295), "技术路径深度研究", font=zh_sub, fill=parse_color(profile["sub"]))
-
-    footer_y = 578
-    prefix = "抗体精准定位  ·  "
-    middle = "  ·  体内生成 "
-    draw.text((x, footer_y), prefix, font=zh_footer, fill=parse_color(profile["footer"]))
-    cursor = x + int(draw.textlength(prefix, font=zh_footer))
-    draw.text((cursor, footer_y), "mRNA", font=latin_footer, fill=parse_color(profile["footer"]))
-    cursor += int(draw.textlength("mRNA", font=latin_footer))
-    draw.text((cursor, footer_y), middle, font=zh_footer, fill=parse_color(profile["footer"]))
-    cursor += int(draw.textlength(middle, font=zh_footer))
-    draw.text((cursor, footer_y), "CAR-T", font=latin_footer, fill=parse_color(profile["footer"]))
+    eyebrow = args.eyebrow if args.eyebrow is not None else profile["label"]
+    if eyebrow:
+        draw_bilingual(draw, (x, y(96)), eyebrow, zh_small, latin_small, parse_color(profile["accent"]))
+    if args.title:
+        draw_bilingual(draw, (x, y(152)), args.title, zh_main, latin_main, parse_color(profile["main"]))
+    if args.subtitle_line1:
+        draw_bilingual(draw, (x, y(246)), args.subtitle_line1, zh_sub, latin_sub, parse_color(profile["sub"]))
+    if args.subtitle_line2:
+        draw_bilingual(draw, (x, y(295)), args.subtitle_line2, zh_sub, latin_sub, parse_color(profile["sub"]))
+    if args.footer:
+        draw_bilingual(draw, (x, y(578)), args.footer, zh_footer, latin_footer, parse_color(profile["footer"]))
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     image.save(args.output, quality=96)

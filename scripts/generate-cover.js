@@ -44,7 +44,7 @@ if (fs.existsSync(configPath)) {
 const baseUrl = args['base-url'] || process.env.OPENAI_BASE_URL || config.base_url || 'https://api.openai.com/v1';
 const apiKey  = args['api-key']  || process.env.OPENAI_API_KEY  || config.api_key  || '';
 const model   = args['model']    || process.env.COVER_IMAGE_MODEL || config.model || 'dall-e-3';
-const size    = args['size']     || config.default_size || '1792x1024';
+const size    = args['size']     || config.default_size || '1584x672';
 let prompt  = args['prompt']   || '';
 const briefPath = args['brief'] || '';
 const theme   = args['theme']    || 'custom';

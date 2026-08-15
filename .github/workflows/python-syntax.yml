@@ -13,3 +13,4 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m py_compile scripts/*.py
+      - run: python scripts/run_evals.py

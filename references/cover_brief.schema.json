@@ -26,7 +26,7 @@
       "type": "object",
       "required": ["id", "rationale", "compatibility"],
       "properties": {
-        "id": {"pattern": "^theme(?:[1-9]|1[0-6])$"},
+        "id": {"pattern": "^theme(?:[1-9]|1[0-3])$"},
         "rationale": {"type": "string", "minLength": 20},
         "compatibility": {"enum": ["compatible", "user_override"]}
       }
@@ -53,7 +53,12 @@
         }
       }
     },
-    "forbidden_substitutions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 3}},
+    "forbidden_substitutions": {
+      "description": "Content-level keyword shortcuts that would misstate the article, such as a vaccine-syringe cliche for a delivery-mechanism article. Do not reuse image-quality negative-prompt terms such as watermark, crowded layout, or gibberish.",
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 3}
+    },
     "title": {
       "type": "object",
       "required": ["exact_text", "subtitle", "zone", "type_mood", "type_palette", "integration_device"],

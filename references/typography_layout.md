@@ -1,6 +1,6 @@
 # Typography And Layout System
 
-Use this deterministic post-production layout whenever exact Chinese text is required.
+Use this deterministic layout for native-image post-production. In prompt-only mode, repeat the same coordinates, type hierarchy, and font direction inside the English image prompt.
 
 ## Canvas and fixed coordinates
 
@@ -12,6 +12,21 @@ Use this deterministic post-production layout whenever exact Chinese text is req
 - Footer: `抗体精准定位 · mRNA 递送 · 体内生成 CAR-T`, one line, 17-20 px.
 - Do not add a box, underline, divider, shadow, gradient, or translucent panel behind text.
 - Place text directly on the source image's natural quiet field. If no quiet field exists, regenerate the background first.
+
+## Generation-to-layout conversion
+
+Use the same title field in two representations. Image prompts use percentages; post-production uses pixels on the canonical canvas.
+
+| Canonical pixels (`1584x672`) | Prompt percentage |
+| --- | --- |
+| `x=76..620` | `x=4.8%..39.1%` |
+| `y=88..585` | `y=13.1%..87.1%` |
+
+For another 2.33-2.35:1 input image, `scripts/compose_cover.py` scales these coordinates and font sizes proportionally. Do not use a different title zone for generation and post-production.
+
+## Prompt-only title requirement
+
+When no image-generation capability exists, the final English prompt must request the exact title in this left field. It must state the title verbatim, reserve the left 39% of the canvas, use the Chinese and Latin font directions below, and prohibit any other text or objects in the field. Also provide the post-production fallback specification because model-rendered Chinese can be inaccurate.
 
 ## Bundled font library
 

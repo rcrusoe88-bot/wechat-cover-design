@@ -1,4 +1,4 @@
 {
   "name": "wechat-cover-design",
-  "description": "宿主无关的公众号封面设计 Skill：输入文章、标题、提纲或 brief，从 13 套科学、杂志、产业、临床与生物工艺视觉主题中匹配风格，使用固定标题坐标与可选开源字体输出稳定封面 prompt 与成图说明。只做封面，不写标题与摘要。"
+  "description": "Biopharma WeChat cover design Skill. Select from 13 biomedical visual themes, generate an image directly when possible, or provide a copy-ready prompt with an exact left-side title when image generation is unavailable."
 }
