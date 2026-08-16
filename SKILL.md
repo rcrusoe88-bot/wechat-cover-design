@@ -1,6 +1,6 @@
 ---
 name: wechat-cover-design
-description: Design finished WeChat Official Account covers for biopharma and biomedical articles. Use when the user asks for a 公众号封面、封面图、文章首图、cover image、cover prompt or banner art about drug discovery, delivery, clinical evidence, molecular design, CMC, biotech industry, or related science. Select from thirteen biopharma visual systems, then ask the user whether to generate the cover directly or provide a copy-ready English prompt with an exact left-side title specification.
+description: Design stable WeChat Official Account covers for biopharma and biomedical articles. Use when the user asks for a 公众号封面、封面图、文章首图、cover image、cover prompt or banner art about drug discovery, delivery, clinical evidence, molecular design, CMC, biotech industry, or related science. Ask the user to choose direct-image-generation or prompt-only, then generate a text-free background, audit its left quiet field, and apply exact title typography only with deterministic layout or image editing.
 ---
 
 # WeChat Cover Design
@@ -13,8 +13,8 @@ Before drafting the final answer, explicitly ask the user to choose an execution
 
 | User selection | Required action |
 | --- | --- |
-| Direct image generation | **Generate the image directly.** When layout/editing is also available, generate a text-free background with the fixed left title field and apply exact text afterward. When layout/editing is unavailable, generate directly from the full left-title prompt used in prompt-only mode. Return the image artifact and the production note. |
-| Prompt-only | Return one copy-ready English image-generation prompt. It must ask the target image model to render the exact title in the fixed left field and must include the full title layout specification in the same prompt. |
+| Direct image generation | Generate a text-free background, audit it, then apply exact text with layout/editing or `scripts/compose_cover.py`. If layout/editing is unavailable, return the text-free background plus a deterministic overlay specification; do not claim it is a finished cover. |
+| Prompt-only | Return one copy-ready English prompt for a text-free background plus a deterministic overlay specification. |
 
 If the user has not selected a path, ask only which they want: direct image generation or prompt-only. Never claim an image was generated unless the host returned an image artifact.
 
@@ -67,22 +67,19 @@ All covers use a `1584x672` canvas (about 2.35:1). The title field is always on 
 
 ### Direct image-generation path
 
-Use this path only after the user selects direct image generation. Write a text-free image prompt that explicitly reserves the fixed left title field. Generate the artwork with the host's native image tool. Then render the supplied exact title in the field using host layout/editing or `scripts/compose_cover.py`. If the host can generate but cannot overlay text, generate the cover directly from the full title prompt and state the possible Chinese-rendering limitation in the production note.
+Use this path only after the user selects direct image generation. Write a text-free image prompt that explicitly reserves the fixed left title field. Generate the artwork with the host's native image tool. If the provider only supports `16:9`, generate at `16:9`, center-crop to `2.35:1`, then audit the cropped result. Run `scripts/validate_cover.py --input <background.png> --theme <1-13>` before any type is applied. A failed audit means regenerate the background. Only then render the supplied exact title in the field using host layout/editing or `scripts/compose_cover.py`.
 
-### Prompt-only path
+### Handoff path
 
 Use this path only after the user selects prompt-only. Provide one self-contained English prompt that contains all of the following:
 
 1. Target dimensions: `1584x672` or `2.35:1`.
 2. The selected theme's visual scene, palette, materials, focal object, and right-side placement.
 3. A left-side low-detail title field occupying 39% of the width.
-4. A verbatim text instruction such as: `Render the following title exactly in the left title field: "{main title}".` Include the exact subtitle if supplied.
-5. Typography instruction: left aligned; Chinese in Hanchan Zhengkai or closest elegant classical serif substitute; Latin/English in PreTesto or closest high-contrast italic serif; palette and line hierarchy matching the theme.
-6. A `Subtitle:` instruction, using `None` only when the user supplied no subtitle.
-7. A `Small labels:` instruction. Render only supplied labels, keep Chinese labels to 4-6 characters, and prefer scientific abbreviations such as `CD8+`, `VHH`, `LNP`, `mRNA`, or `CAR-T`. Do not invent labels or put long Chinese prose next to objects.
-8. A negative prompt preventing watermarks, extra text, labels not supplied by the user, logos, and objects entering the title field.
+4. An explicit `text-free background` instruction, with `no readable text, labels, logo, or watermark anywhere in the generated image`.
+5. A negative prompt preventing objects, high-contrast edges, labels, and data marks from entering the title field.
 
-The fallback prompt must contain the title, subtitle, and any supplied small labels. Also append a short `Post-production fallback` note with the same text, coordinates, fonts, and colors in case the target image model renders Chinese inaccurately.
+Then append a separate `Overlay specification` containing the exact title, subtitle, coordinates, fonts, and colors. Never ask the image model to render these strings.
 
 ## Deliverables
 
@@ -95,13 +92,13 @@ Return:
 3. A concise Chinese production note: title treatment, crop safety, and any text-rendering limitation.
 4. The validation result.
 
-### When only a prompt can be produced
+### When a handoff is required
 
 Return:
 
 1. Theme and one-sentence rationale.
-2. A complete, copy-ready English image prompt containing the left title instructions above.
-3. `Post-production fallback`: title, subtitle, `x=76..620, y=88..585`, Chinese font, English font, palette, and left alignment.
+2. A complete, copy-ready English prompt for a text-free background.
+3. `Overlay specification`: title, subtitle, `x=76..620, y=88..585`, Chinese font, English font, palette, and left alignment.
 4. A concise Chinese production note and the validation result.
 
 ## Prompt package format
@@ -123,11 +120,9 @@ Element provenance: "focal object: article section ...; supporting object: reade
 Forbidden substitutions: "article-irrelevant visual shortcuts only; do not repeat image-quality negative terms"
 
 English image prompt:
-Create a 1584x672 (2.35:1) WeChat cover in [selected theme] style. Place [focal scientific scene] in the right 60% of the canvas. Reserve left x=4.8%-39.1%, y=13.1%-87.1% as a low-detail, theme-native title field.
-[Native-image path only: Generate text-free artwork in this field for exact post-production typography.]
-[Prompt-only path only: Render the exact Chinese main title "..." in the left title field. Subtitle: "...". Small labels: "...". Render supplied labels only.]
-Text-rendering strategy: [state the selected path and how exact text is rendered].
-Negative prompt: watermark, logo, unsupplied text, gibberish, crowded composition, focal objects in the title field.
+Create a text-free 16:9 or 1584x672 (2.35:1) WeChat cover in [selected theme] style. Place [focal scientific scene] in the right 60% of the canvas. Reserve left x=4.8%-39.1%, y=13.1%-87.1% as a low-detail, theme-native title field. Do not render readable text, labels, logos, or watermarks anywhere in the image.
+Text-rendering strategy: audit the background, then overlay exact supplied text with deterministic layout.
+Negative prompt: watermark, logo, readable text, gibberish, crowded composition, focal objects, high-contrast edges, labels, or data marks in the title field.
 
 Chinese production note:
 ...
@@ -137,8 +132,8 @@ Chinese production note:
 
 Before delivery, confirm that the final prompt has no unresolved placeholders, states the 2.35:1 format, includes a negative prompt, names the theme's visual language, and preserves the left title field.
 
-- For a native-image prompt, run `scripts/validate_prompt.py --all` when Python is available. Verify that exact title text is separated from the text-free image prompt and is available for post-production.
-- For a prompt-only deliverable, run `scripts/validate_prompt.py --prompt-only`; it runs the same structural and Alignment Record checks and additionally requires an explicit left title field plus title, subtitle, and small-label instructions.
+- Run `scripts/validate_prompt.py --all` for every text-free background prompt.
+- Run `scripts/validate_cover.py --input <background.png> --theme <1-13>` after generation and before title overlay. If it fails, regenerate the background. Do not override with `--force` in production.
 - If scripts cannot run, apply the equivalent checklist manually and state that fact.
 
 ## References
@@ -148,4 +143,5 @@ Before delivery, confirm that the final prompt has no unresolved placeholders, s
 - `references/typography_layout.md`: fixed coordinates, palette, and bundled fonts.
 - `references/title_overlay_policy.md`: native-image and prompt-only title rules.
 - `scripts/compose_cover.py`: deterministic title compositor.
+- `scripts/validate_cover.py`: image-level quiet-field and contrast quality gate.
 - `scripts/validate_prompt.py`: prompt validator.

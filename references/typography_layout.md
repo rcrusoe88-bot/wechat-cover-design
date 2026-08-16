@@ -1,6 +1,6 @@
 # Typography And Layout System
 
-Use this deterministic layout for native-image post-production. In prompt-only mode, repeat the same coordinates, type hierarchy, and font direction inside the English image prompt.
+Use this deterministic layout for native-image post-production. Do not ask an image model to render the final Chinese title: it is not a deterministic typography engine.
 
 ## Canvas and fixed coordinates
 
@@ -22,11 +22,11 @@ Use the same title field in two representations. Image prompts use percentages; 
 | `x=76..620` | `x=4.8%..39.1%` |
 | `y=88..585` | `y=13.1%..87.1%` |
 
-For another 2.33-2.35:1 input image, `scripts/compose_cover.py` scales these coordinates and font sizes proportionally. Do not use a different title zone for generation and post-production.
+For another 2.33-2.35:1 input image, `scripts/compose_cover.py` scales these coordinates and font sizes proportionally. When the provider supports only 16:9, generate the text-free background at 16:9, center-crop it to 2.35:1, then audit and overlay the title. Do not use a different title zone for generation and post-production.
 
-## Prompt-only title requirement
+## Background-only requirement
 
-When no image-generation capability exists, the final English prompt must request the exact title in this left field. It must state the title verbatim, reserve the left 39% of the canvas, use the Chinese and Latin font directions below, and prohibit any other text or objects in the field. Also provide the post-production fallback specification because model-rendered Chinese can be inaccurate.
+Every image-generation prompt must request a text-free background and reserve the left 39% as a quiet field. Exact Chinese and Latin typography is overlaid only after the background passes `scripts/validate_cover.py`. A host without compositing support must return the text-free background plus the exact overlay specification; it must not claim that model-rendered title text is production-ready.
 
 ## Bundled font library
 
@@ -60,7 +60,7 @@ Theme IDs begin at 1 and correspond to former themes 4-16. Use the source-specif
 | 7 | Science archive | charcoal + oxide red |
 | 8 | Pipeline map | navy + teal |
 | 9 | Clinical evidence | navy + safety orange |
-| 10 | Cell mechanism | ice white + RNA gold |
+| 10 | Cell mechanism | deep navy + dark RNA gold on warm white |
 | 11 | Medical congress | cold white + magenta |
-| 12 | Molecular blueprint | ice white + node yellow |
+| 12 | Molecular blueprint | deep navy + dark node gold on ice white |
 | 13 | Bioprocess | deep teal + amber |

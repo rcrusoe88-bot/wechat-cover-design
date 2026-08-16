@@ -10,17 +10,15 @@ Generate the background without text. Keep the left title field low-detail and f
 - Latin/English: `PreTesto_it.ttf`.
 - No underline, divider, card, shadow, or translucent panel.
 
-If the host can generate images but cannot perform layout or image editing, generate the cover directly from the prompt-only title instruction below. Record that model-rendered Chinese may need the supplied post-production correction.
+If the host can generate images but cannot perform layout or image editing, return a text-free background and the overlay specification. Do not generate the final Chinese title inside the image model; this mode is a handoff, not a finished cover.
 
-## Prompt-only mode
+## Handoff mode
 
-The final English prompt must include the exact title, subtitle, and any supplied small labels, and ask the target model to render them in the left title field. Include all of the following in the prompt:
+The final English prompt must request a text-free background. Include all of the following in the prompt:
 
 - `left 39% of the canvas reserved for a left-aligned title block`;
-- the exact main title and optional subtitle in quotation marks;
-- `Small labels: "..."` near their named objects; use short Chinese terms (4-6 characters) or scientific abbreviations such as `CD8+`, `VHH`, `LNP`, `mRNA`, and `CAR-T`;
-- Chinese and Latin font direction;
-- theme-matched color direction and hierarchy;
+- `no text, labels, watermark, or logo anywhere in the generated image`;
+- no objects, high-contrast edges, or data marks in the title field;
 - `no other text, labels, watermark, logo, or object in the title field`.
 
-Because image models can render Chinese inaccurately, state this limitation in the production note and also provide a post-production fallback containing the same exact text and coordinates. This fallback supplements the prompt; it does not replace the required in-prompt title instruction.
+Return the exact title, subtitle, fonts, colors, and coordinates as an overlay specification. The destination system must run `scripts/validate_cover.py` before `scripts/compose_cover.py`; a failed audit requires background regeneration.

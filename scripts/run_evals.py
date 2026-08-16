@@ -6,6 +6,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+from PIL import Image, ImageDraw
+
+from cover_quality import TITLE_ZONE, audit_background
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON = sys.executable
@@ -36,6 +40,13 @@ def main() -> int:
     provisional_brief = ROOT / "evals" / "brief_provisional_rejected.json"
     final_data = json.loads(final_brief.read_text(encoding="utf-8"))
 
+    bright_field = Image.new("RGB", (1584, 672), "#F6F4EA")
+    dark_field = Image.new("RGB", (1584, 672), "#193F54")
+    busy_field = Image.new("RGB", (1584, 672), "#F6F4EA")
+    busy_draw = ImageDraw.Draw(busy_field)
+    for x in range(TITLE_ZONE[0], TITLE_ZONE[2], 12):
+        busy_draw.line((x, TITLE_ZONE[1], x, TITLE_ZONE[3]), fill="#183E56", width=4)
+
     checks = [
         report(
             "final structured brief is accepted",
@@ -50,6 +61,26 @@ def main() -> int:
         report(
             "provisional structured brief is rejected",
             run("scripts/validate_brief.py", str(provisional_brief)),
+            1,
+        ),
+        report(
+            "theme 10 accepts a quiet bright title field",
+            subprocess.CompletedProcess([], 0 if not audit_background(bright_field, 10) else 1),
+            0,
+        ),
+        report(
+            "theme 12 accepts a quiet bright title field",
+            subprocess.CompletedProcess([], 0 if not audit_background(bright_field, 12) else 1),
+            0,
+        ),
+        report(
+            "theme 10 rejects a dark low-contrast title field",
+            subprocess.CompletedProcess([], 1 if audit_background(dark_field, 10) else 0),
+            1,
+        ),
+        report(
+            "quality gate rejects a busy title field",
+            subprocess.CompletedProcess([], 1 if audit_background(busy_field, 12) else 0),
             1,
         ),
     ]
