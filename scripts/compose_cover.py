@@ -58,7 +58,7 @@ def main() -> None:
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--theme", required=True, type=int, choices=range(1, 14))
-    parser.add_argument("--font", default="assets/fonts/YangRendongZhushi-Light.ttf", help="Chinese font")
+    parser.add_argument("--font", default="assets/fonts/Hanchan-Zhengkai-Big5.ttf", help="Chinese font")
     parser.add_argument("--latin-font", default="assets/fonts/PreTesto_it.ttf", help="Latin/English font")
     parser.add_argument("--eyebrow", help="Optional eyebrow; defaults to the theme label")
     parser.add_argument("--title", default="in vivo CAR-T", help="Exact main title")

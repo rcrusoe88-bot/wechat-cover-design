@@ -30,20 +30,20 @@ When no image-generation capability exists, the final English prompt must reques
 
 ## Bundled font library
 
-Fonts live in `assets/fonts/`; default Chinese text uses `YangRendongZhushi-Light.ttf`, while all Latin/English text uses `PreTesto_it.ttf`.
+Fonts live in `assets/fonts/`; default Chinese text uses `Hanchan-Zhengkai-Big5.ttf`, while all Latin/English text uses `PreTesto_it.ttf`.
 
 | Key | Asset | Suggested use |
 | --- | --- | --- |
-| `yangrendong` | `YangRendongZhushi-Light.ttf` | Default scientific editorial cover |
+| `yangrendong` | `YangRendongZhushi-Light.ttf` | Restrained scientific editorial alternative |
 | `pixel` | `Chinese-Pixel-Fangdian.otf` | Swiss, archive, technical data |
 | `baituxiaobai` | `Baitu-Xiaobai.ttf` | Clay and approachable biomedical |
-| `hanchan_zhengkai` | `Hanchan-Zhengkai-Big5.ttf` | Nature and classical journal tone |
+| `hanchan_zhengkai` | `Hanchan-Zhengkai-Big5.ttf` | Default scientific editorial cover; Nature and classical journal tone |
 | `qingliu_lishu` | `Qingliu-Lishu.ttf` | Business editorial and strong opinion |
 | `xieling` | `Xieling-Futi-ExtraLight.otf` | Microscopic, clinical, airy technical |
 | `yunfeng_hanchan` | `Yunfeng-Hanchan.ttf` | Archive, blueprint, engineering notes |
 | `pretesto` | `PreTesto_it.ttf` | Fixed Latin/English title and acronym rendering |
 
-English lockup: `in vivo CAR-T`, `LNP`, `mRNA`, and `CAR-T` are always rendered with `PreTesto_it.ttf` by `scripts/compose_cover.py`. Chinese text remains on the selected Chinese font, defaulting to Yang Ren-dong Zhushi.
+English lockup: `in vivo CAR-T`, `LNP`, `mRNA`, and `CAR-T` are always rendered with `PreTesto_it.ttf` by `scripts/compose_cover.py`. Chinese text remains on the selected Chinese font, defaulting to Hanchan Zhengkai.
 
 ## Theme title profiles
 

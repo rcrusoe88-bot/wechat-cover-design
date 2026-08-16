@@ -1,6 +1,6 @@
 ---
 name: wechat-cover-design
-description: Design finished WeChat Official Account covers for biopharma and biomedical articles. Use when the user asks for a 公众号封面、封面图、文章首图、cover image、cover prompt or banner art about drug discovery, delivery, clinical evidence, molecular design, CMC, biotech industry, or related science. Select from thirteen biopharma visual systems, generate the cover directly when the host can generate images, and otherwise provide a copy-ready English prompt with an exact left-side title specification.
+description: Design finished WeChat Official Account covers for biopharma and biomedical articles. Use when the user asks for a 公众号封面、封面图、文章首图、cover image、cover prompt or banner art about drug discovery, delivery, clinical evidence, molecular design, CMC, biotech industry, or related science. Select from thirteen biopharma visual systems, then ask the user whether to generate the cover directly or provide a copy-ready English prompt with an exact left-side title specification.
 ---
 
 # WeChat Cover Design
@@ -9,14 +9,14 @@ Create one editorial WeChat cover from the article's actual claim. This skill is
 
 ## Execution rule
 
-Decide the execution path before drafting the final answer.
+Before drafting the final answer, explicitly ask the user to choose an execution path. Do not infer the path from host capability.
 
-| Host capability | Required action |
+| User selection | Required action |
 | --- | --- |
-| Native image generation is available | **Generate the image directly.** Do not stop at a prompt. When layout/editing is also available, generate a text-free background with the fixed left title field and apply exact text afterward. When layout/editing is unavailable, generate directly from the full left-title prompt used in prompt-only mode. Return the image artifact and the production note. |
-| No native image generation is available | Return one copy-ready English image-generation prompt. It must ask the target image model to render the exact title in the fixed left field and must include the full title layout specification in the same prompt. |
+| Direct image generation | **Generate the image directly.** When layout/editing is also available, generate a text-free background with the fixed left title field and apply exact text afterward. When layout/editing is unavailable, generate directly from the full left-title prompt used in prompt-only mode. Return the image artifact and the production note. |
+| Prompt-only | Return one copy-ready English image-generation prompt. It must ask the target image model to render the exact title in the fixed left field and must include the full title layout specification in the same prompt. |
 
-Never ask the user to choose between these paths when the host capability is known. Never claim an image was generated unless the host returned an image artifact.
+If the user has not selected a path, ask only which they want: direct image generation or prompt-only. Never claim an image was generated unless the host returned an image artifact.
 
 ## Input and visual brief
 
@@ -61,23 +61,23 @@ All covers use a `1584x672` canvas (about 2.35:1). The title field is always on 
 
 - Use a natural quiet field, not a translucent card, underline, divider, shadow, or gradient panel.
 - Reserve the left field before generating the background. Keep it low-detail, clear of focal objects, high-contrast edges, labels, and data marks.
-- Use the selected theme's palette. Chinese defaults to `YangRendongZhushi-Light.ttf`; Latin/English uses `PreTesto_it.ttf`.
+- Use the selected theme's palette. Chinese defaults to `Hanchan-Zhengkai-Big5.ttf`; Latin/English uses `PreTesto_it.ttf`.
 - Keep the hierarchy to eyebrow, main title, optional subtitle, and one short footer at most.
 - If the source artwork has no usable left quiet field, regenerate the background. Do not move the title toward the scientific subject.
 
-### Native-image path
+### Direct image-generation path
 
-Write a text-free image prompt that explicitly reserves the fixed left title field. Generate the artwork immediately with the host's native image tool. Then render the supplied exact title in the field using host layout/editing or `scripts/compose_cover.py`. If the host can generate but cannot overlay text, still generate the cover directly, but use the full prompt-only title instruction in that generation and state the possible Chinese-rendering limitation in the production note.
+Use this path only after the user selects direct image generation. Write a text-free image prompt that explicitly reserves the fixed left title field. Generate the artwork with the host's native image tool. Then render the supplied exact title in the field using host layout/editing or `scripts/compose_cover.py`. If the host can generate but cannot overlay text, generate the cover directly from the full title prompt and state the possible Chinese-rendering limitation in the production note.
 
 ### Prompt-only path
 
-Provide one self-contained English prompt that contains all of the following:
+Use this path only after the user selects prompt-only. Provide one self-contained English prompt that contains all of the following:
 
 1. Target dimensions: `1584x672` or `2.35:1`.
 2. The selected theme's visual scene, palette, materials, focal object, and right-side placement.
 3. A left-side low-detail title field occupying 39% of the width.
 4. A verbatim text instruction such as: `Render the following title exactly in the left title field: "{main title}".` Include the exact subtitle if supplied.
-5. Typography instruction: left aligned; Chinese in Yang Rendong Zhushi Light or closest elegant brush-serif substitute; Latin/English in PreTesto or closest high-contrast italic serif; palette and line hierarchy matching the theme.
+5. Typography instruction: left aligned; Chinese in Hanchan Zhengkai or closest elegant classical serif substitute; Latin/English in PreTesto or closest high-contrast italic serif; palette and line hierarchy matching the theme.
 6. A `Subtitle:` instruction, using `None` only when the user supplied no subtitle.
 7. A `Small labels:` instruction. Render only supplied labels, keep Chinese labels to 4-6 characters, and prefer scientific abbreviations such as `CD8+`, `VHH`, `LNP`, `mRNA`, or `CAR-T`. Do not invent labels or put long Chinese prose next to objects.
 8. A negative prompt preventing watermarks, extra text, labels not supplied by the user, logos, and objects entering the title field.
@@ -111,7 +111,7 @@ Use this package structure for both paths. It is also the required input to `scr
 ```text
 Cover plan:
 Theme: Theme 6 - Swiss poster
-Generation path: native-image / prompt-only
+Generation path: user-confirmed direct-image-generation / prompt-only
 
 Alignment Record:
 Article thesis: "..."

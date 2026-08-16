@@ -6,7 +6,7 @@ All themes reserve the same natural left title field: `x=76..620`, `y=88..585` o
 
 Generate the background without text. Keep the left title field low-detail and free of focal objects. After generation, render exact typography with the host layout tool or `scripts/compose_cover.py`:
 
-- Chinese: `YangRendongZhushi-Light.ttf` by default.
+- Chinese: `Hanchan-Zhengkai-Big5.ttf` by default.
 - Latin/English: `PreTesto_it.ttf`.
 - No underline, divider, card, shadow, or translucent panel.
 
