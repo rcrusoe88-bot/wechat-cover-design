@@ -33,7 +33,7 @@ Skill 不会根据宿主能力自动选择路径。每次封面请求开始时�
 
 ### 直接生图
 
-Skill 直接调用可用的原生生图工具，先生成右侧科学主体与左侧自然留白的无字背景。背景通过安静区与对比度检查后，才用固定版式叠加标题。若宿主只能生图、不能后期排版，Skill 输出无字背景和精确叠字规范，避免交付不可控的模型中文字。
+Skill 直接调用可用的原生生图工具，先生成右侧科学主体与左侧自然留白的无字背景。背景必须通过安静区、对比度和结构侵入检查后，才用固定版式叠加标题。若宿主只能生图、不能后期排版，Skill 输出无字背景和精确叠字规范，避免交付不可控的模型中文字。
 
 ### 提供提示词
 
@@ -91,7 +91,7 @@ Skill 输出一段完整英文无字底图提示词，其中强制写明：
 在可运行 Python 的环境中，先审核约 `2.35:1` 的无字背景，再用固定脚本叠加精确文字。坐标和字号会按输入尺寸等比缩放：
 
 ```text
-python scripts/validate_cover.py --input <background.png> --theme 9
+python scripts/validate_cover.py --input <background.png> --theme 9 --json
 python scripts/compose_cover.py --input <background.png> --output <cover.png> --theme 9 --title "in vivo CAR-T" --subtitle-line1 "抗体偶联 LNP" --subtitle-line2 "技术路径深度研究" --footer "抗体精准定位 · mRNA · 体内生成 CAR-T"
 ```
 

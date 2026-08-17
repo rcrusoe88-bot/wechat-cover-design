@@ -45,7 +45,6 @@ def main() -> None:
     parser.add_argument("--subtitle-line2", default="技术路径深度研究", help="Second subtitle line; use an empty string to omit")
     parser.add_argument("--footer", default="抗体精准定位  ·  mRNA  ·  体内生成 CAR-T", help="Short footer; use an empty string to omit")
     parser.add_argument("--crop-16-9", action="store_true", help="Center-crop a 16:9 source to the canonical 2.35:1 cover before overlaying text")
-    parser.add_argument("--force", action="store_true", help="Overlay text even when the background quality gate fails")
     args = parser.parse_args()
 
     image = Image.open(args.input).convert("RGB")
@@ -61,7 +60,7 @@ def main() -> None:
     scale_y = height / BASE_CANVAS[1]
     scale_font = min(scale_x, scale_y)
     issues = audit_background(image, args.theme)
-    if issues and not args.force:
+    if issues:
         raise ValueError("background failed title quality gate: " + "; ".join(issues))
 
     root = Path(__file__).resolve().parents[1]

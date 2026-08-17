@@ -13,7 +13,7 @@ Before drafting the final answer, explicitly ask the user to choose an execution
 
 | User selection | Required action |
 | --- | --- |
-| Direct image generation | Generate a text-free background, audit it, then apply exact text with layout/editing or `scripts/compose_cover.py`. If layout/editing is unavailable, return the text-free background plus a deterministic overlay specification; do not claim it is a finished cover. |
+| Direct image generation | Generate a text-free background, run `scripts/validate_cover.py --json`, then apply exact text with layout/editing or `scripts/compose_cover.py`. Only a returned JSON object with `"status": "PASS"` permits delivery. If layout/editing is unavailable, return the text-free background plus a deterministic overlay specification; do not claim it is a finished cover. |
 | Prompt-only | Return one copy-ready English prompt for a text-free background plus a deterministic overlay specification. |
 
 If the user has not selected a path, ask only which they want: direct image generation or prompt-only. Never claim an image was generated unless the host returned an image artifact.
@@ -67,7 +67,7 @@ All covers use a `1584x672` canvas (about 2.35:1). The title field is always on 
 
 ### Direct image-generation path
 
-Use this path only after the user selects direct image generation. Write a text-free image prompt that explicitly reserves the fixed left title field. Generate the artwork with the host's native image tool. If the provider only supports `16:9`, generate at `16:9`, center-crop to `2.35:1`, then audit the cropped result. Run `scripts/validate_cover.py --input <background.png> --theme <1-13>` before any type is applied. A failed audit means regenerate the background. Only then render the supplied exact title in the field using host layout/editing or `scripts/compose_cover.py`.
+Use this path only after the user selects direct image generation. Write a text-free image prompt that explicitly reserves the fixed left title field. Generate the artwork with the host's native image tool. If the provider only supports `16:9`, generate at `16:9`, center-crop to `2.35:1`, then audit the cropped result. Run `scripts/validate_cover.py --input <background.png> --theme <1-13> --json` before any type is applied. A failed audit means regenerate the background. The audit rejects high-contrast long lines, charts, process paths, labels, or any large structured mark in the title field. Do not describe the image as audited unless the command returned `"status": "PASS"`; phrases such as “审计一次过” are not validation evidence. Only then render the supplied exact title in the field using host layout/editing or `scripts/compose_cover.py`.
 
 ### Handoff path
 
@@ -91,6 +91,7 @@ Return:
 2. Theme and one-sentence rationale.
 3. A concise Chinese production note: title treatment, crop safety, and any text-rendering limitation.
 4. The validation result.
+5. The raw JSON result from `scripts/validate_cover.py --json`.
 
 ### When a handoff is required
 
@@ -133,7 +134,7 @@ Chinese production note:
 Before delivery, confirm that the final prompt has no unresolved placeholders, states the 2.35:1 format, includes a negative prompt, names the theme's visual language, and preserves the left title field.
 
 - Run `scripts/validate_prompt.py --all` for every text-free background prompt.
-- Run `scripts/validate_cover.py --input <background.png> --theme <1-13>` after generation and before title overlay. If it fails, regenerate the background. Do not override with `--force` in production.
+- Run `scripts/validate_cover.py --input <background.png> --theme <1-13> --json` after generation and before title overlay. If it fails, regenerate the background. There is no bypass flag.
 - If scripts cannot run, apply the equivalent checklist manually and state that fact.
 
 ## References
