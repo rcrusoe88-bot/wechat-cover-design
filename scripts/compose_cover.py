@@ -10,6 +10,7 @@ from PIL import Image, ImageDraw, ImageFont
 from cover_quality import BASE_CANVAS, THEMES, audit_background, parse_color
 
 LATIN_RUN = re.compile(r"[A-Za-z0-9+./-]+|\s+")
+TITLE_MAX_WIDTH = 500
 
 
 def load_font(path: Path, base_size: int, scale: float) -> ImageFont.FreeTypeFont:
@@ -32,6 +33,40 @@ def draw_bilingual(
         cursor += round(draw.textlength(run, font=face))
 
 
+def bilingual_width(
+    draw: ImageDraw.ImageDraw,
+    text: str,
+    chinese_font: ImageFont.FreeTypeFont,
+    latin_font: ImageFont.FreeTypeFont,
+) -> int:
+    return sum(
+        round(draw.textlength(run, font=latin_font if LATIN_RUN.fullmatch(run) else chinese_font))
+        for run in re.findall(r"[A-Za-z0-9+./-]+|\s+|[^A-Za-z0-9+./\-\s]+", text)
+    )
+
+
+def fit_bilingual_fonts(
+    draw: ImageDraw.ImageDraw,
+    texts: list[str],
+    chinese_path: Path,
+    latin_path: Path,
+    preferred_size: int,
+    minimum_size: int,
+    scale: float,
+    maximum_width: int,
+) -> tuple[ImageFont.FreeTypeFont, ImageFont.FreeTypeFont]:
+    """Keep a title group inside its safe field without changing its supplied text."""
+    for size in range(preferred_size, minimum_size - 1, -1):
+        chinese_font = load_font(chinese_path, size, scale)
+        latin_font = load_font(latin_path, size, scale)
+        if all(not text or bilingual_width(draw, text, chinese_font, latin_font) <= maximum_width for text in texts):
+            return chinese_font, latin_font
+    raise ValueError(
+        "title line exceeds the left safe field at the minimum permitted type size; "
+        "supply a semantic line break instead of overlapping the background"
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", required=True, type=Path)
@@ -40,7 +75,9 @@ def main() -> None:
     parser.add_argument("--font", default="assets/fonts/Hanchan-Zhengkai-Big5.ttf", help="Chinese font")
     parser.add_argument("--latin-font", default="assets/fonts/PreTesto_it.ttf", help="Latin/English font")
     parser.add_argument("--eyebrow", help="Optional eyebrow; defaults to the theme label")
-    parser.add_argument("--title", default="in vivo CAR-T", help="Exact main title")
+    parser.add_argument("--title-prefix", default="", help="Exact title prefix, for example Ab-mRNA-LNP")
+    parser.add_argument("--title", default="in vivo CAR-T", help="Exact main title line 1")
+    parser.add_argument("--title-line2", default="", help="Exact main title line 2; use an empty string to omit")
     parser.add_argument("--subtitle-line1", default="抗体偶联 LNP", help="First subtitle line; use an empty string to omit")
     parser.add_argument("--subtitle-line2", default="技术路径深度研究", help="Second subtitle line; use an empty string to omit")
     parser.add_argument("--footer", default="抗体精准定位  ·  mRNA  ·  体内生成 CAR-T", help="Short footer; use an empty string to omit")
@@ -73,20 +110,31 @@ def main() -> None:
 
     draw = ImageDraw.Draw(image)
     profile = THEMES[args.theme]
-    zh_small, zh_main, zh_sub, zh_footer = (load_font(chinese_path, size, scale_font) for size in (25, 72, 41, 20))
-    latin_small, latin_main, latin_sub, latin_footer = (load_font(latin_path, size, scale_font) for size in (25, 72, 41, 20))
+    zh_small, latin_small = load_font(chinese_path, 25, scale_font), load_font(latin_path, 25, scale_font)
+    zh_prefix, latin_prefix = fit_bilingual_fonts(
+        draw, [args.title_prefix], chinese_path, latin_path, 46, 38, scale_font, round(TITLE_MAX_WIDTH * scale_x)
+    )
+    zh_main, latin_main = fit_bilingual_fonts(
+        draw, [args.title, args.title_line2], chinese_path, latin_path, 62, 52, scale_font, round(TITLE_MAX_WIDTH * scale_x)
+    )
+    zh_sub, latin_sub = load_font(chinese_path, 34, scale_font), load_font(latin_path, 34, scale_font)
+    zh_footer, latin_footer = load_font(chinese_path, 20, scale_font), load_font(latin_path, 20, scale_font)
     x = round(76 * scale_x)
     y = lambda base: round(base * scale_y)
 
     eyebrow = args.eyebrow if args.eyebrow is not None else profile.label
     if eyebrow:
         draw_bilingual(draw, (x, y(96)), eyebrow, zh_small, latin_small, parse_color(profile.accent))
+    if args.title_prefix:
+        draw_bilingual(draw, (x, y(140)), args.title_prefix, zh_prefix, latin_prefix, parse_color(profile.main))
     if args.title:
-        draw_bilingual(draw, (x, y(152)), args.title, zh_main, latin_main, parse_color(profile.main))
+        draw_bilingual(draw, (x, y(210)), args.title, zh_main, latin_main, parse_color(profile.main))
+    if args.title_line2:
+        draw_bilingual(draw, (x, y(288)), args.title_line2, zh_main, latin_main, parse_color(profile.main))
     if args.subtitle_line1:
-        draw_bilingual(draw, (x, y(246)), args.subtitle_line1, zh_sub, latin_sub, parse_color(profile.sub))
+        draw_bilingual(draw, (x, y(398)), args.subtitle_line1, zh_sub, latin_sub, parse_color(profile.sub))
     if args.subtitle_line2:
-        draw_bilingual(draw, (x, y(295)), args.subtitle_line2, zh_sub, latin_sub, parse_color(profile.sub))
+        draw_bilingual(draw, (x, y(445)), args.subtitle_line2, zh_sub, latin_sub, parse_color(profile.sub))
     if args.footer:
         draw_bilingual(draw, (x, y(578)), args.footer, zh_footer, latin_footer, parse_color(profile.footer))
 

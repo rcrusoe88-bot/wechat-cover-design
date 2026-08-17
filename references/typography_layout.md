@@ -6,12 +6,16 @@ Use this deterministic layout for native-image post-production. Do not ask an im
 
 - Output canvas: `1584x672` (approximately 2.35:1), crop-safe for WeChat.
 - Default title field: `x=76..620`, `y=88..585`; keep all text left aligned.
-- Eyebrow: one line, 22-26 px.
-- Main title: `in vivo CAR-T`, one line, 64-76 px.
-- Subtitle: `抗体偶联 LNP\n技术路径深度研究`, two lines, 36-44 px.
+- Eyebrow: one line only, 22-26 px. It contains content class and angle only; never place a title term on a second eyebrow line.
+- Title prefix: optional but immutable when supplied, for example `Ab-mRNA-LNP`; 46 px, minimum 38 px, using `PreTesto_it.ttf` for Latin text.
+- Main title: one or two semantic Chinese lines, default 62 px, minimum 52 px. It is deliberately one scale below the former 72 px title size so it retains a buffer from the right-side subject.
+- Subtitle: up to two lines, 34 px. It explains the claim and must not repeat the main title.
 - Footer: `抗体精准定位 · mRNA 递送 · 体内生成 CAR-T`, one line, 17-20 px.
 - Do not add a box, underline, divider, shadow, gradient, or translucent panel behind text.
 - Place text directly on the source image's natural quiet field. If no quiet field exists, regenerate the background first.
+- The title group is eyebrow, optional title prefix, and one or two main-title lines. Preserve every supplied title term verbatim; do not move a title prefix into the eyebrow, subtitle, or footer.
+- Effective text width is `500 px` within the fixed title field. The compositor measures every title line and shrinks it only to the documented minimum; if it still does not fit, it rejects the layout and requires a semantic line break.
+- Fixed baselines: eyebrow `y=96`; title prefix `y=140`; main title lines `y=210` and `y=288`; subtitle lines `y=398` and `y=445`; footer `y=578`.
 
 ## Generation-to-layout conversion
 

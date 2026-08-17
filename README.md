@@ -51,7 +51,7 @@ Skill 输出一段完整英文无字底图提示词，其中强制写明：
 ## 固定版式与字体
 
 - 统一画布：`1584x672`
-- 标题区域：`x=76..620, y=88..585`
+- 标题区域：`x=76..620, y=88..585`；有效文字宽度为 `500px`
 - 生成提示词坐标：`x=4.8%..39.1%, y=13.1%..87.1%`
 - 中文默认字体：`Hanchan-Zhengkai-Big5.ttf`
 - 英文固定字体：`PreTesto_it.ttf`
@@ -92,7 +92,7 @@ Skill 输出一段完整英文无字底图提示词，其中强制写明：
 
 ```text
 python scripts/validate_cover.py --input <background.png> --theme 9 --json
-python scripts/compose_cover.py --input <background.png> --output <cover.png> --theme 9 --title "in vivo CAR-T" --subtitle-line1 "抗体偶联 LNP" --subtitle-line2 "技术路径深度研究" --footer "抗体精准定位 · mRNA · 体内生成 CAR-T"
+python scripts/compose_cover.py --input <background.png> --output <cover.png> --theme 9 --title-prefix "Ab-mRNA-LNP" --title "不是被配体打败" --title-line2 "而是被工艺惯性困住" --subtitle-line1 "SELI 与表面工程" --subtitle-line2 "如何撬动 T 细胞靶向" --footer "抗体修饰 · SELI 两步工艺 · T 细胞靶向"
 ```
 
 若生图服务仅支持 `16:9`，先生成无字底图，再在叠字时使用 `--crop-16-9` 居中裁为 `1584x672`：

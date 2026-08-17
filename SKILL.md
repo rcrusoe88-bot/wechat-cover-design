@@ -28,7 +28,7 @@ Extract only what is needed to make a cover specific to the article:
 | Reader takeaway | What a reader should grasp in three seconds. |
 | Core object chain | Focal scientific object, supporting object, and outcome. |
 | Evidence | At most two meaningful comparisons, measures, or stages. |
-| Title inventory | Exact main title, optional subtitle, and any text that must remain verbatim. |
+| Title inventory | Exact optional title prefix, one or two exact main-title lines, optional subtitle, and any text that must remain verbatim. A supplied title prefix is part of the title and cannot be omitted or demoted. |
 | Constraints | Brand colors, exclusions, or required theme. |
 
 If the article does not provide enough information for a factual visual, ask up to three focused questions. Do not invent experimental results, clinical claims, company facts, or medical efficacy.
@@ -63,6 +63,8 @@ All covers use a `1584x672` canvas (about 2.35:1). The title field is always on 
 - Reserve the left field before generating the background. Keep it low-detail, clear of focal objects, high-contrast edges, labels, and data marks.
 - Use the selected theme's palette. Chinese defaults to `Hanchan-Zhengkai-Big5.ttf`; Latin/English uses `PreTesto_it.ttf`.
 - Keep the hierarchy to eyebrow, main title, optional subtitle, and one short footer at most.
+- Use the fixed title group: one-line eyebrow; optional title prefix; one or two semantic main-title lines; up to two subtitle lines; one-line footer. A title prefix such as `Ab-mRNA-LNP` stays in the title group, never in the eyebrow or footer.
+- Main title default is 62 px, with a 52 px minimum. The compositor measures each line against the 500 px effective width and rejects overflow; it never moves title text toward the scientific subject.
 - If the source artwork has no usable left quiet field, regenerate the background. Do not move the title toward the scientific subject.
 
 ### Direct image-generation path
