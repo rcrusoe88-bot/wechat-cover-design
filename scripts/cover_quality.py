@@ -27,12 +27,11 @@ THEMES = {
     5: ThemePalette("主题 5 · 显微纪录摄影", "#E6EEEE", "#36E562", "#E6EEEE", "#CCD2D1"),
     6: ThemePalette("主题 6 · Swiss 极简海报", "#111111", "#1749C6", "#111111", "#111111"),
     7: ThemePalette("主题 7 · 复古科学档案", "#22201D", "#A33D2E", "#22201D", "#22201D"),
-    8: ThemePalette("主题 8 · 药物管线地图", "#123B69", "#1B9994", "#123B69", "#123B69"),
+    8: ThemePalette("主题 8 · 药物管线地图", "#0A2948", "#147F7B", "#0A2948", "#0A2948"),
     9: ThemePalette("主题 9 · 临床证据蓝图", "#12375C", "#FF6B21", "#12375C", "#52616B"),
-    # Themes 10 and 12 use a bright paper field; their title colors must be dark.
-    10: ThemePalette("主题 10 · Cell 机制图谱", "#103B5C", "#9A6A16", "#103B5C", "#315A73"),
+    10: ThemePalette("主题 10 · Cell 机制图谱", "#EDF8FA", "#F0C45B", "#C7EEF5", "#8FCBD8"),
     11: ThemePalette("主题 11 · 医学大会主视觉", "#F0F8FA", "#D94A98", "#F0F8FA", "#48CED0"),
-    12: ThemePalette("主题 12 · 分子蓝图", "#0E3D63", "#7C7200", "#0E3D63", "#315A73"),
+    12: ThemePalette("主题 12 · 分子蓝图", "#EDF8FA", "#F0C45B", "#C7EEF5", "#8FCBD8"),
     13: ThemePalette("主题 13 · 生物工艺工程", "#164B68", "#B37A28", "#164B68", "#164B68"),
 }
 

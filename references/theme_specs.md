@@ -40,7 +40,7 @@ Center the therapy object and surround it with sparse cohort points, dose-respon
 
 ## Theme 10 · Cell mechanism atlas
 
-Use one continuous publication-grade cellular cross-section showing targeting, internalization, endosomal escape, mRNA translation and CAR-T engagement. Warm white, navy, cyan membrane, burgundy vesicles and RNA gold. Keep a quiet publication masthead zone. No boxed panels or textbook cartoon styling.
+Use one continuous publication-grade cellular cross-section showing targeting, internalization, endosomal escape, mRNA translation and CAR-T engagement. Deep navy, cyan membrane, burgundy vesicles, cold white and RNA gold. Keep a dark quiet publication masthead zone. No boxed panels or textbook cartoon styling.
 
 ## Theme 11 · Medical congress key visual
 
@@ -48,7 +48,7 @@ Use ordered particles and molecular fragments converging into a monumental thera
 
 ## Theme 12 · Molecular blueprint
 
-Use a central targeted-LNP cutaway with lipid shell, ionizable core, PEG linker, VHH ligand and RNA payload, plus three magnification windows. Prussian blue, ice white, cyan linework and node yellow. Reserve a left blueprint field. No readable formulas, patent IDs or HUD.
+Use a central targeted-LNP cutaway with lipid shell, ionizable core, PEG linker, VHH ligand and RNA payload, plus three magnification windows. Prussian blue, ice white, cyan linework and node yellow. Reserve a dark left blueprint field for light typography. No readable formulas, patent IDs or HUD.
 
 ## Theme 13 · Bioprocess engineering
 

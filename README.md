@@ -55,7 +55,8 @@ Skill 输出一段完整英文无字底图提示词，其中强制写明：
 - 生成提示词坐标：`x=4.8%..39.1%, y=13.1%..87.1%`
 - 中文默认字体：`Hanchan-Zhengkai-Big5.ttf`
 - 英文固定字体：`PreTesto_it.ttf`
-- 其他中文可选字体：像素方点、包图小白体、寒蝉正楷、青柳隶书、谐灵附体、云峰寒蝉体
+
+两款字体均按 SIL Open Font License 1.1 随项目分发；版权、来源和许可证见 `assets/fonts/NOTICE.md` 与 `assets/fonts/OFL.txt`。
 
 标题直接进入背景图的自然留白，不使用卡片、下划线、分隔线、阴影或半透明蒙层。
 
@@ -63,32 +64,36 @@ Skill 输出一段完整英文无字底图提示词，其中强制写明：
 
 | 主题 1 | 主题 2 | 主题 3 |
 | --- | --- | --- |
-| [![主题1](assets/theme-previews/titled/theme1-clay-diorama.png)](assets/theme-previews/titled/theme1-clay-diorama.png) | [![主题2](assets/theme-previews/titled/theme2-nature-science.png)](assets/theme-previews/titled/theme2-nature-science.png) | [![主题3](assets/theme-previews/titled/theme3-businessweek.png)](assets/theme-previews/titled/theme3-businessweek.png) |
+| [![主题1](assets/theme-previews/titled-thumbs/theme1-clay-diorama.jpg)](assets/theme-previews/theme1-clay-diorama.png) | [![主题2](assets/theme-previews/titled-thumbs/theme2-nature-science.jpg)](assets/theme-previews/theme2-nature-science.png) | [![主题3](assets/theme-previews/titled-thumbs/theme3-businessweek.jpg)](assets/theme-previews/theme3-businessweek.png) |
 | 黏土微缩剖面 | Nature 科学意象 | Businessweek 商业隐喻 |
 
 | 主题 4 | 主题 5 | 主题 6 |
 | --- | --- | --- |
-| [![主题4](assets/theme-previews/titled/theme4-monocle.png)](assets/theme-previews/titled/theme4-monocle.png) | [![主题5](assets/theme-previews/titled/theme5-micro-documentary.png)](assets/theme-previews/titled/theme5-micro-documentary.png) | [![主题6](assets/theme-previews/titled/theme6-swiss-poster.png)](assets/theme-previews/titled/theme6-swiss-poster.png) |
+| [![主题4](assets/theme-previews/titled-thumbs/theme4-monocle.jpg)](assets/theme-previews/theme4-monocle.png) | [![主题5](assets/theme-previews/titled-thumbs/theme5-micro-documentary.jpg)](assets/theme-previews/theme5-micro-documentary.png) | [![主题6](assets/theme-previews/titled-thumbs/theme6-swiss-poster.jpg)](assets/theme-previews/theme6-swiss-poster.png) |
 | Monocle 产业观察 | 显微纪录摄影 | Swiss 极简海报 |
 
 | 主题 7 | 主题 8 | 主题 9 |
 | --- | --- | --- |
-| [![主题7](assets/theme-previews/titled/theme7-science-archive.png)](assets/theme-previews/titled/theme7-science-archive.png) | [![主题8](assets/theme-previews/titled/theme8-pipeline-map.png)](assets/theme-previews/titled/theme8-pipeline-map.png) | [![主题9](assets/theme-previews/titled/theme9-clinical-evidence.png)](assets/theme-previews/titled/theme9-clinical-evidence.png) |
+| [![主题7](assets/theme-previews/titled-thumbs/theme7-science-archive.jpg)](assets/theme-previews/theme7-science-archive.png) | [![主题8](assets/theme-previews/titled-thumbs/theme8-pipeline-map.jpg)](assets/theme-previews/theme8-pipeline-map.png) | [![主题9](assets/theme-previews/titled-thumbs/theme9-clinical-evidence.jpg)](assets/theme-previews/theme9-clinical-evidence.png) |
 | 复古科学档案 | 药物管线地图 | 临床证据蓝图 |
 
 | 主题 10 | 主题 11 | 主题 12 |
 | --- | --- | --- |
-| [![主题10](assets/theme-previews/titled/theme10-cell-mechanism.png)](assets/theme-previews/titled/theme10-cell-mechanism.png) | [![主题11](assets/theme-previews/titled/theme11-medical-congress.png)](assets/theme-previews/titled/theme11-medical-congress.png) | [![主题12](assets/theme-previews/titled/theme12-molecular-blueprint.png)](assets/theme-previews/titled/theme12-molecular-blueprint.png) |
+| [![主题10](assets/theme-previews/titled-thumbs/theme10-cell-mechanism.jpg)](assets/theme-previews/theme10-cell-mechanism.png) | [![主题11](assets/theme-previews/titled-thumbs/theme11-medical-congress.jpg)](assets/theme-previews/theme11-medical-congress.png) | [![主题12](assets/theme-previews/titled-thumbs/theme12-molecular-blueprint.jpg)](assets/theme-previews/theme12-molecular-blueprint.png) |
 | Cell 机制图谱 | 医学大会主视觉 | 分子蓝图 |
 
 | 主题 13 |
 | --- |
-| [![主题13](assets/theme-previews/titled/theme13-bioprocess.png)](assets/theme-previews/titled/theme13-bioprocess.png) |
+| [![主题13](assets/theme-previews/titled-thumbs/theme13-bioprocess.jpg)](assets/theme-previews/theme13-bioprocess.png) |
 | 生物工艺工程 |
 
 ## 本地标题合成
 
 在可运行 Python 的环境中，先审核约 `2.35:1` 的无字背景，再用固定脚本叠加精确文字。坐标和字号会按输入尺寸等比缩放：
+
+```text
+python -m pip install -r requirements.txt
+```
 
 ```text
 python scripts/validate_cover.py --input <background.png> --theme 9 --json

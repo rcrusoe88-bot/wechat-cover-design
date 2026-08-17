@@ -1,0 +1,4 @@
+interface:
+  display_name: "WeChat Biopharma Cover Design"
+  short_description: "Validated biopharma WeChat covers and prompts"
+  default_prompt: "Use $wechat-cover-design to create a validated cover for this biopharma article."

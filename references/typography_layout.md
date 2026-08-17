@@ -6,16 +6,16 @@ Use this deterministic layout for native-image post-production. Do not ask an im
 
 - Output canvas: `1584x672` (approximately 2.35:1), crop-safe for WeChat.
 - Default title field: `x=76..620`, `y=88..585`; keep all text left aligned.
-- Eyebrow: one line only, 22-26 px. It contains content class and angle only; never place a title term on a second eyebrow line.
+- Eyebrow: one line only, 25 px, with an 18 px minimum. It contains content class and angle only; never place a title term on a second eyebrow line.
 - Title prefix: optional but immutable when supplied, for example `Ab-mRNA-LNP`; 46 px, minimum 38 px, using `PreTesto_it.ttf` for Latin text.
 - Main title: one or two semantic Chinese lines, default 62 px, minimum 52 px. It is deliberately one scale below the former 72 px title size so it retains a buffer from the right-side subject.
-- Subtitle: up to two lines, 34 px. It explains the claim and must not repeat the main title.
-- Footer: `抗体精准定位 · mRNA 递送 · 体内生成 CAR-T`, one line, 17-20 px.
+- Subtitle: up to two lines, 34 px, with a 26 px minimum. It explains the claim and must not repeat the main title.
+- Footer: `抗体精准定位 · mRNA 递送 · 体内生成 CAR-T`, one line, 20 px, with a 16 px minimum.
 - Do not add a box, underline, divider, shadow, gradient, or translucent panel behind text.
 - Place text directly on the source image's natural quiet field. If no quiet field exists, regenerate the background first.
 - The title group is eyebrow, optional title prefix, and one or two main-title lines. Preserve every supplied title term verbatim; do not move a title prefix into the eyebrow, subtitle, or footer.
-- Effective text width is `500 px` within the fixed title field. The compositor measures every title line and shrinks it only to the documented minimum; if it still does not fit, it rejects the layout and requires a semantic line break.
-- Fixed baselines: eyebrow `y=96`; title prefix `y=140`; main title lines `y=210` and `y=288`; subtitle lines `y=398` and `y=445`; footer `y=578`.
+- Effective text width is `500 px` within the fixed title field. The compositor measures eyebrow, main-title, subtitle, and footer lines and shrinks each group only to its documented minimum; if a line still does not fit, it rejects the layout and requires a semantic line break.
+- Fixed baselines: eyebrow `y=96`; title prefix `y=140`; main title lines `y=210` and `y=288`; subtitle lines `y=398` and `y=445`; footer `y=548`.
 
 ## Generation-to-layout conversion
 
@@ -36,16 +36,12 @@ Every image-generation prompt must request a text-free background and reserve th
 
 Fonts live in `assets/fonts/`; default Chinese text uses `Hanchan-Zhengkai-Big5.ttf`, while all Latin/English text uses `PreTesto_it.ttf`.
 
-| Key | Asset | Suggested use |
+| Key | Asset | Use |
 | --- | --- | --- |
-| `yangrendong` | `YangRendongZhushi-Light.ttf` | Restrained scientific editorial alternative |
-| `pixel` | `Chinese-Pixel-Fangdian.otf` | Swiss, archive, technical data |
-| `baituxiaobai` | `Baitu-Xiaobai.ttf` | Clay and approachable biomedical |
-| `hanchan_zhengkai` | `Hanchan-Zhengkai-Big5.ttf` | Default scientific editorial cover; Nature and classical journal tone |
-| `qingliu_lishu` | `Qingliu-Lishu.ttf` | Business editorial and strong opinion |
-| `xieling` | `Xieling-Futi-ExtraLight.otf` | Microscopic, clinical, airy technical |
-| `yunfeng_hanchan` | `Yunfeng-Hanchan.ttf` | Archive, blueprint, engineering notes |
-| `pretesto` | `PreTesto_it.ttf` | Fixed Latin/English title and acronym rendering |
+| `hanchan_zhengkai` | `Hanchan-Zhengkai-Big5.ttf` | All Chinese cover typography |
+| `pretesto` | `PreTesto_it.ttf` | Latin/English titles and acronyms |
+
+Both files are distributed under SIL Open Font License 1.1. Read `assets/fonts/NOTICE.md` and `assets/fonts/OFL.txt` before redistributing the skill.
 
 English lockup: `in vivo CAR-T`, `LNP`, `mRNA`, and `CAR-T` are always rendered with `PreTesto_it.ttf` by `scripts/compose_cover.py`. Chinese text remains on the selected Chinese font, defaulting to Hanchan Zhengkai.
 
@@ -62,9 +58,9 @@ Theme IDs begin at 1 and correspond to former themes 4-16. Use the source-specif
 | 5 | Micro documentary | silver white + fluorescence green |
 | 6 | Swiss poster | black + cobalt blue |
 | 7 | Science archive | charcoal + oxide red |
-| 8 | Pipeline map | navy + teal |
+| 8 | Pipeline map | deep navy + teal |
 | 9 | Clinical evidence | navy + safety orange |
-| 10 | Cell mechanism | deep navy + dark RNA gold on warm white |
+| 10 | Cell mechanism | cold white + RNA gold on deep navy |
 | 11 | Medical congress | cold white + magenta |
-| 12 | Molecular blueprint | deep navy + dark node gold on ice white |
+| 12 | Molecular blueprint | ice white + node gold on Prussian blue |
 | 13 | Bioprocess | deep teal + amber |

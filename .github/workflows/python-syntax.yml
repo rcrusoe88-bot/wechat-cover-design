@@ -1,16 +1,21 @@
-name: Python syntax
+name: Validate skill
 
 on:
   push:
   pull_request:
 
 jobs:
-  compile:
+  validate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+          cache: pip
+      - run: python -m pip install --requirement requirements.txt
       - run: python -m py_compile scripts/*.py
       - run: python scripts/run_evals.py
+      - run: node --check scripts/generate-cover.js

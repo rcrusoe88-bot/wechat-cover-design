@@ -1,15 +1,15 @@
 [
   {"query": "帮我设计公众号封面图", "should_trigger": true},
-  {"query": "这篇AI文章需要一张封面", "should_trigger": true},
-  {"query": "生成封面图，学术风格", "should_trigger": true},
+  {"query": "这篇LNP递送文章需要一张封面", "should_trigger": true},
+  {"query": "给临床证据分析生成一张学术风封面图", "should_trigger": true},
   {"query": "给我一个封面图提示词", "should_trigger": true},
   {"query": "封面prompt帮我写一个", "should_trigger": true},
   {"query": "这篇文章配个封面，顶刊那种感觉", "should_trigger": true},
-  {"query": "用粘土微缩风设计封面", "should_trigger": true},
-  {"query": "文生图，做个公众号首图", "should_trigger": true},
-  {"query": "AI出图做封面", "should_trigger": true},
-  {"query": "cover image for this article", "should_trigger": true},
-  {"query": "give me a cover prompt", "should_trigger": true},
+  {"query": "用粘土微缩风设计一个细胞治疗封面", "should_trigger": true},
+  {"query": "文生图，做个生物工艺公众号首图", "should_trigger": true},
+  {"query": "给抗体偶联分析用AI出图做封面", "should_trigger": true},
+  {"query": "cover image for this drug-discovery article", "should_trigger": true},
+  {"query": "give me a cover prompt for a biotech pipeline review", "should_trigger": true},
   {"query": "帮我出张封面，直接生成图片", "should_trigger": true},
 
   {"query": "帮我写标题", "should_trigger": false},
@@ -21,5 +21,6 @@
   {"query": "这篇文章的数据怎么解读", "should_trigger": false},
   {"query": "查一下最新的LNP递送研究", "should_trigger": false},
   {"query": "生成一张插图", "should_trigger": false},
+  {"query": "这篇AI文章需要一张封面", "should_trigger": false},
   {"query": "解释一下mRNA的翻译机制", "should_trigger": false}
 ]

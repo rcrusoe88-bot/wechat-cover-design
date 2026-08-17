@@ -110,19 +110,46 @@ def main() -> None:
 
     draw = ImageDraw.Draw(image)
     profile = THEMES[args.theme]
-    zh_small, latin_small = load_font(chinese_path, 25, scale_font), load_font(latin_path, 25, scale_font)
+    eyebrow = args.eyebrow if args.eyebrow is not None else profile.label
+    zh_small, latin_small = fit_bilingual_fonts(
+        draw,
+        [eyebrow],
+        chinese_path,
+        latin_path,
+        25,
+        18,
+        scale_font,
+        round(TITLE_MAX_WIDTH * scale_x),
+    )
     zh_prefix, latin_prefix = fit_bilingual_fonts(
         draw, [args.title_prefix], chinese_path, latin_path, 46, 38, scale_font, round(TITLE_MAX_WIDTH * scale_x)
     )
     zh_main, latin_main = fit_bilingual_fonts(
         draw, [args.title, args.title_line2], chinese_path, latin_path, 62, 52, scale_font, round(TITLE_MAX_WIDTH * scale_x)
     )
-    zh_sub, latin_sub = load_font(chinese_path, 34, scale_font), load_font(latin_path, 34, scale_font)
-    zh_footer, latin_footer = load_font(chinese_path, 20, scale_font), load_font(latin_path, 20, scale_font)
+    zh_sub, latin_sub = fit_bilingual_fonts(
+        draw,
+        [args.subtitle_line1, args.subtitle_line2],
+        chinese_path,
+        latin_path,
+        34,
+        26,
+        scale_font,
+        round(TITLE_MAX_WIDTH * scale_x),
+    )
+    zh_footer, latin_footer = fit_bilingual_fonts(
+        draw,
+        [args.footer],
+        chinese_path,
+        latin_path,
+        20,
+        16,
+        scale_font,
+        round(TITLE_MAX_WIDTH * scale_x),
+    )
     x = round(76 * scale_x)
     y = lambda base: round(base * scale_y)
 
-    eyebrow = args.eyebrow if args.eyebrow is not None else profile.label
     if eyebrow:
         draw_bilingual(draw, (x, y(96)), eyebrow, zh_small, latin_small, parse_color(profile.accent))
     if args.title_prefix:
@@ -136,7 +163,7 @@ def main() -> None:
     if args.subtitle_line2:
         draw_bilingual(draw, (x, y(445)), args.subtitle_line2, zh_sub, latin_sub, parse_color(profile.sub))
     if args.footer:
-        draw_bilingual(draw, (x, y(578)), args.footer, zh_footer, latin_footer, parse_color(profile.footer))
+        draw_bilingual(draw, (x, y(548)), args.footer, zh_footer, latin_footer, parse_color(profile.footer))
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     image.save(args.output, quality=96)
