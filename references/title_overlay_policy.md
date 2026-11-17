@@ -2,6 +2,8 @@
 
 All themes reserve the same natural left title field: `x=76..620`, `y=88..585` on a `1584x672` canvas. It is part of the background composition, not a floating UI panel.
 
+Every eyebrow begins with the exact brand label `信使引擎`; append ` / ` and a short content class when useful. Never use `RNAscript` or any other publication name.
+
 ## Native-image mode
 
 Generate the background without text. Keep the left title field low-detail and free of focal objects. After generation, render exact typography with the host layout tool or `scripts/compose_cover.py`:
