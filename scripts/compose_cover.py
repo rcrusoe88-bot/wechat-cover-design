@@ -11,6 +11,7 @@ from cover_quality import BASE_CANVAS, THEMES, audit_background, parse_color
 
 LATIN_RUN = re.compile(r"[A-Za-z0-9+./-]+|\s+")
 TITLE_MAX_WIDTH = 500
+BRAND_LABEL = "信使引擎"
 
 
 def load_font(path: Path, base_size: int, scale: float) -> ImageFont.FreeTypeFont:
@@ -74,7 +75,7 @@ def main() -> None:
     parser.add_argument("--theme", required=True, type=int, choices=range(1, 14))
     parser.add_argument("--font", default="assets/fonts/Hanchan-Zhengkai-Big5.ttf", help="Chinese font")
     parser.add_argument("--latin-font", default="assets/fonts/PreTesto_it.ttf", help="Latin/English font")
-    parser.add_argument("--eyebrow", help="Optional eyebrow; defaults to the theme label")
+    parser.add_argument("--eyebrow", default=BRAND_LABEL, help="Optional eyebrow; defaults to 信使引擎")
     parser.add_argument("--title-prefix", default="", help="Exact title prefix, for example Ab-mRNA-LNP")
     parser.add_argument("--title", default="in vivo CAR-T", help="Exact main title line 1")
     parser.add_argument("--title-line2", default="", help="Exact main title line 2; use an empty string to omit")
@@ -110,7 +111,11 @@ def main() -> None:
 
     draw = ImageDraw.Draw(image)
     profile = THEMES[args.theme]
-    eyebrow = args.eyebrow if args.eyebrow is not None else profile.label
+    eyebrow = re.sub(r"^\s*RNAscript\s*/\s*", "", args.eyebrow, flags=re.I).strip()
+    if not eyebrow:
+        eyebrow = BRAND_LABEL
+    elif not eyebrow.startswith(BRAND_LABEL):
+        eyebrow = f"{BRAND_LABEL} / {eyebrow}"
     zh_small, latin_small = fit_bilingual_fonts(
         draw,
         [eyebrow],

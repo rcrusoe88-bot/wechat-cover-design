@@ -6,7 +6,7 @@ Use this deterministic layout for native-image post-production. Do not ask an im
 
 - Output canvas: `1584x672` (approximately 2.35:1), crop-safe for WeChat.
 - Default title field: `x=76..620`, `y=88..585`; keep all text left aligned.
-- Eyebrow: one line only, 25 px, with an 18 px minimum. It contains content class and angle only; never place a title term on a second eyebrow line.
+- Eyebrow: one line only, 25 px, with an 18 px minimum. It must begin with the exact brand label `信使引擎`, followed by ` / ` and a short content class when useful. If no class is supplied, use exactly `信使引擎`. Remove any legacy `RNAscript` label. Never place a title term on a second eyebrow line.
 - Title prefix: optional but immutable when supplied, for example `Ab-mRNA-LNP`; 46 px, minimum 38 px, using `PreTesto_it.ttf` for Latin text.
 - Main title: one or two semantic Chinese lines, default 62 px, minimum 52 px. It is deliberately one scale below the former 72 px title size so it retains a buffer from the right-side subject.
 - Subtitle: up to two lines, 34 px, with a 26 px minimum. It explains the claim and must not repeat the main title.

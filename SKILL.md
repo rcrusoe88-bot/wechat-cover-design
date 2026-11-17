@@ -62,6 +62,7 @@ All covers use a `1584x672` canvas (about 2.35:1). The title field is always on 
 - Use a natural quiet field, not a translucent card, underline, divider, shadow, or gradient panel.
 - Reserve the left field before generating the background. Keep it low-detail, clear of focal objects, high-contrast edges, labels, and data marks.
 - Use the selected theme's palette. Chinese defaults to `Hanchan-Zhengkai-Big5.ttf`; Latin/English uses `PreTesto_it.ttf`.
+- Brand contract: every cover eyebrow starts with the exact label `信使引擎`; use `信使引擎 / <short content class>` when a class helps. Never use `RNAscript` or another publication name. Normalize any supplied legacy eyebrow instead of preserving it.
 - Keep the hierarchy to eyebrow, main title, optional subtitle, and one short footer at most.
 - Use the fixed title group: one-line eyebrow; optional title prefix; one or two semantic main-title lines; up to two subtitle lines; one-line footer. A title prefix such as `Ab-mRNA-LNP` stays in the title group, never in the eyebrow or footer.
 - Main title default is 62 px, with a 52 px minimum. The compositor measures each line against the 500 px effective width and rejects overflow; it never moves title text toward the scientific subject.
